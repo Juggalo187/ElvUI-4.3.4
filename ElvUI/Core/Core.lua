@@ -1290,6 +1290,13 @@ function E:DBConversions()
 		E.db.general.vendorGraysDetails = nil
 		E.db.general.vendorGrays = nil
 	end
+	
+	--Vendor Greens option is now in bags table
+	if E.db.general.vendorGreens ~= nil then
+		E.db.bags.vendorGreens.enable = E.db.general.vendorGreens
+		E.db.general.vendorGreensDetails = nil
+		E.db.general.vendorGreens = nil
+	end
 
 	--Heal Prediction is now a table instead of a bool
 	for _, unit in ipairs({"player", "target", "focus", "pet", "arena", "party", "raid", "raid40", "raidpet"}) do

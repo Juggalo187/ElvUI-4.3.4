@@ -157,6 +157,7 @@ end
 
 function M:MERCHANT_SHOW()
 	if E.db.bags.vendorGrays.enable then E:Delay(0.5, Bags.VendorGrays, Bags) end
+	if E.db.bags.vendorGreens.enable then E:Delay(0.5, Bags.VendorGreens, Bags) end
 
 	if E.db.general.autoRepair == "NONE" or IsShiftKeyDown() or not CanMerchantRepair() then return end
 

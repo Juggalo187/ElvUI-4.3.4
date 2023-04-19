@@ -798,8 +798,73 @@ E.Options.args.bags = {
 				}
 			}
 		},
-		bagSortingGroup = {
+		deleteGrays = {
 			order = 7,
+			type = "group",
+			name = L["Delete Grays"],
+			get = function(info) return E.db.bags.deleteGrays[info[#info]] end,
+			set = function(info, value) E.db.bags.deleteGrays[info[#info]] = value B:UpdateDeleteGraySettings() end,
+			args = {
+				enable = {
+					order = 1,
+					type = "toggle",
+					name = L["Auto Delete Greys"],
+					desc = L["Automatically delete grey when looting."]
+				},
+				details = {
+					order = 2,
+					type = "toggle",
+					name = L["Chat Output"],
+					desc = L["Displays item that was deleted in chat."]
+				},
+				deletevalue = {
+							order = 3,
+							name = L["Sell Price Below (Silver)"],
+							type = "range",
+							min = 1, max = 99, step = 1
+						}
+			}
+		},
+		vendorGreens = {
+			order = 8,
+			type = "group",
+			name = L["Vendor Greens"],
+			get = function(info) return E.db.bags.vendorGreens[info[#info]] end,
+			set = function(info, value) E.db.bags.vendorGreens[info[#info]] = value B:UpdateSellFrameSettings() end,
+			args = {
+				enable = {
+					order = 1,
+					type = "toggle",
+					name = L["Auto Sell Armor/Weapons"],
+					desc = L["Automatically vendor green items when visiting a vendor."]
+				},
+				details = {
+					order = 2,
+					type = "toggle",
+					name = L["Detailed Report"],
+					desc = L["Displays a detailed report of every item sold when enabled."]
+				},
+				progressBar = {
+					order = 3,
+					type = "toggle",
+					name = L["Progress Bar"]
+				},
+				sellsoubound = {
+					order = 4,
+					type = "toggle",
+					name = L["Include Soulbound"],
+					set = function(info, value) E.db.bags.vendorGreens.sellsoubound = value B:UpdateSellFrameSettings() end
+				},
+				sellvalue = {
+							order = 5,
+							name = L["Sell Price Above (Gold)"],
+							type = "range",
+							min = 1, max = 30, step = 1
+						}
+			}
+		},
+		bagSortingGroup = {
+			order = 9,
 			type = "group",
 			name = L["Bag Sorting"],
 			disabled = function() return not E.Bags.Initialized end,
@@ -889,7 +954,7 @@ E.Options.args.bags = {
 			}
 		},
 		search_syntax = {
-			order = 8,
+			order = 10,
 			type = "group",
 			name = L["Search Syntax"],
 			disabled = function() return not E.Bags.Initialized end,

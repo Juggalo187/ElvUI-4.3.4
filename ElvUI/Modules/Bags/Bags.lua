@@ -69,6 +69,11 @@ local SEARCH = SEARCH
 
 local SEARCH_STRING = ""
 
+local sellvalueNum = 30
+local deletevalueNum = 99
+local includesoulbound = false
+local GrayDelete_Timer
+
 function B:GetContainerFrame(arg)
 	if type(arg) == "boolean" and arg == true then
 		return B.BankFrame
@@ -975,6 +980,198 @@ function B:VendorGrayCheck()
 	end
 end
 
+
+function B:GetGreensValue()
+	local value = 0
+	local scanTooltip
+	
+	for bag = 0, 4 do
+		for slot = 1, GetContainerNumSlots(bag) do
+			local itemID = GetContainerItemID(bag, slot)
+			if itemID then
+				local _, _, rarity, _, _, iType, _, _, _, _, itemPrice = GetItemInfo(itemID)
+				if itemPrice and itemPrice > (sellvalueNum * 10000) then
+					local stackCount = select(2, GetContainerItemInfo(bag, slot)) or 1
+					local stackPrice = itemPrice * stackCount
+					if (rarity and rarity == 2) and (iType and iType ~= "Quest") and ((iType and iType == "Armor") or (iType and iType == "Weapon")) and (itemPrice and itemPrice > (sellvalueNum * 10000)) then
+						--value = value + stackPrice
+						
+						if not scanTooltip then
+						scanTooltip = CreateFrame("GameTooltip", "oulboundScanTooltip", UIParent, "GameTooltipTemplate")
+						scanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+						end
+				
+						scanTooltip:ClearLines()
+						scanTooltip:SetHyperlink("item:"..itemID)
+						
+						for id=1, scanTooltip:NumLines() do
+						local text = _G["oulboundScanTooltipTextLeft" .. id]
+
+							if text then
+							if id == 2 then
+								if ((text:GetText() ~= ITEM_BIND_ON_PICKUP) and text:GetText() ~= ITEM_SOULBOUND and text:GetText() ~= ITEM_BIND_QUEST) then
+										value = value + stackPrice
+										else
+										if includesoulbound then
+										value = value + stackPrice
+										end
+								end
+							end
+							
+							
+							end
+
+
+
+						end
+					end
+				end
+			end
+		end
+	end
+
+	return value
+end
+
+function B:VendorGreens(delete)
+
+	if B.SellFrame:IsShown() then return end
+
+	if (not MerchantFrame or not MerchantFrame:IsShown()) and not delete then
+		E:Print(L["You must be at a vendor."])
+		return
+	end
+	
+	local scanTooltip
+
+	for bag = 0, 4, 1 do
+		for slot = 1, GetContainerNumSlots(bag), 1 do
+			local itemID = GetContainerItemID(bag, slot)
+			if itemID then
+				local _, name, rarity, _, _, iType, _, _, _, _, itemPrice = GetItemInfo(itemID)
+				if (rarity and rarity == 2) and (iType and iType ~= "Quest") and ((iType and iType == "Armor") or (iType and iType == "Weapon")) and (itemPrice and itemPrice > (sellvalueNum * 10000)) then
+					--tinsert(B.SellFrame.Info.itemList, {bag, slot, itemPrice, name})
+
+					
+				if not scanTooltip then
+						scanTooltip = CreateFrame("GameTooltip", "oulboundScanTooltip", UIParent, "GameTooltipTemplate")
+						scanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+				end
+					scanTooltip:ClearLines()
+					scanTooltip:SetHyperlink("item:"..itemID)
+					
+					for id=1, scanTooltip:NumLines() do
+						local text = _G["oulboundScanTooltipTextLeft" .. id]
+
+							if text then
+							if id == 2 then
+								if ((text:GetText() ~= ITEM_BIND_ON_PICKUP) and text:GetText() ~= ITEM_SOULBOUND and text:GetText() ~= ITEM_BIND_QUEST) then
+										tinsert(B.SellFrame.Info.itemList, {bag, slot, itemPrice, name})
+										else
+										if includesoulbound then
+										tinsert(B.SellFrame.Info.itemList, {bag, slot, itemPrice, name})
+										end
+								end
+							end
+							
+							
+							end
+
+
+
+					end
+					
+				end	
+			end
+		end
+	end
+
+	if not B.SellFrame.Info.itemList or tmaxn(B.SellFrame.Info.itemList) < 1 then return end
+
+	--Resetting stuff
+	B.SellFrame.Info.delete = delete or false
+	B.SellFrame.Info.ProgressTimer = 0
+	B.SellFrame.Info.SellInterval = E.db.bags.vendorGrays.interval
+	B.SellFrame.Info.ProgressMax = tmaxn(B.SellFrame.Info.itemList)
+	B.SellFrame.Info.goldGained = 0
+	B.SellFrame.Info.itemsSold = 0
+
+	B.SellFrame.statusbar:SetValue(0)
+	B.SellFrame.statusbar:SetMinMaxValues(0, B.SellFrame.Info.ProgressMax)
+	B.SellFrame.statusbar.ValueText:SetText("0 / "..B.SellFrame.Info.ProgressMax)
+
+	--Time to sell
+	B.SellFrame:Show()
+end
+
+function B:VendorGreensCheck()
+	local value = B:GetGreensValue()
+
+	if value == 0 then
+		E:Print(L["No green items to delete."])
+	elseif not MerchantFrame or not MerchantFrame:IsShown() then
+		E.PopupDialogs.DELETE_GREENS.Money = value
+		E:StaticPopup_Show("DELETE_GREENS")
+	else
+		B:VendorGreens()
+	end
+end
+
+function GetGraysDeleteValue()
+	local value = 0
+
+	for bag = 0, 4 do
+		for slot = 1, GetContainerNumSlots(bag) do
+			local itemID = GetContainerItemID(bag, slot)
+			if itemID then
+				local _, _, rarity, _, _, iType, _, _, _, _, itemPrice = GetItemInfo(itemID)
+				if itemPrice and itemPrice < (deletevalueNum * 100) then
+					local stackCount = select(2, GetContainerItemInfo(bag, slot)) or 1
+					local stackPrice = itemPrice * stackCount
+					if (rarity and rarity == 0) and (iType and iType ~= "Quest") and (itemPrice and itemPrice < (deletevalueNum * 100)) then
+						value = value + stackPrice
+					end
+				end
+			end
+		end
+	end
+
+	return value
+end
+
+function DeleteGrays(delete)
+
+	if E.db.bags.deleteGrays.enable == true then
+		for bag = 0, 4, 1 do
+			for slot = 1, GetContainerNumSlots(bag), 1 do
+				local itemID = GetContainerItemID(bag, slot)
+				if itemID then
+					local _, name, rarity, _, _, iType, _, _, _, _, itemPrice = GetItemInfo(itemID)
+					local stackCount = select(2, GetContainerItemInfo(bag, slot)) or 1
+					if (rarity and rarity == 0) and (iType and iType ~= "Quest") and (itemPrice and itemPrice < (deletevalueNum * 100)) then
+					PickupContainerItem(bag, slot)
+						DeleteCursorItem()
+						if E.db.bags.deleteGrays.details then
+						DEFAULT_CHAT_FRAME:AddMessage("|cFF00DDDD Deleted |r"..name.." x"..stackCount)
+						end
+					end	
+				end
+			end
+		end
+	end
+end
+
+function DeleteGreysCheck()
+	local value = GetGraysDeleteValue()
+
+	if value == 0 then
+		E:Print(L["No gray items to delete."])
+	else
+		DeleteGrays()
+	end
+end
+
+
 function B:SetButtonTexture(button, texture)
 	button:SetNormalTexture(texture)
 	button:SetPushedTexture(texture)
@@ -1246,6 +1443,32 @@ function B:ConstructContainerFrame(name, isBank)
 		f.vendorGraysButton:SetScript("OnEnter", B.Tooltip_Show)
 		f.vendorGraysButton:SetScript("OnLeave", GameTooltip_Hide)
 		f.vendorGraysButton:SetScript("OnClick", B.VendorGrayCheck)
+		
+		--Delete Greys
+		f.deleteGraysButton = CreateFrame("Button", nil, f.holderFrame)
+		f.deleteGraysButton:Size(16 + E.Border)
+		f.deleteGraysButton:SetTemplate()
+		f.deleteGraysButton:Point("RIGHT", f.bagsButton, "LEFT", -5, 0)
+		B:SetButtonTexture(f.deleteGraysButton, [[Interface\Icons\INV_Misc_Coin_01]])
+		f.deleteGraysButton:StyleButton(nil, true)
+		f.deleteGraysButton.ttText = L["Vendor / Delete Greens"]
+		f.deleteGraysButton.ttValue = B.GetGraysValue
+		f.deleteGraysButton:SetScript("OnEnter", B.Tooltip_Show)
+		f.deleteGraysButton:SetScript("OnLeave", GameTooltip_Hide)
+		f.deleteGraysButton:SetScript("OnClick", DeleteGreysCheck)
+		
+		--Vendor Greens
+		f.vendorGreensButton = CreateFrame("Button", nil, f.holderFrame)
+		f.vendorGreensButton:Size(16 + E.Border)
+		f.vendorGreensButton:SetTemplate()
+		f.vendorGreensButton:Point("RIGHT", f.bagsButton, "LEFT", -5, 0)
+		B:SetButtonTexture(f.vendorGreensButton, [[Interface\Icons\INV_Misc_Coin_01]])
+		f.vendorGreensButton:StyleButton(nil, true)
+		f.vendorGreensButton.ttText = L["Vendor / Delete Greens"]
+		f.vendorGreensButton.ttValue = B.GetGreensValue
+		f.vendorGreensButton:SetScript("OnEnter", B.Tooltip_Show)
+		f.vendorGreensButton:SetScript("OnLeave", GameTooltip_Hide)
+		f.vendorGreensButton:SetScript("OnClick", B.VendorGreensCheck)
 
 		--Search
 		f.editBox = CreateFrame("EditBox", name.."EditBox", f)
@@ -1255,6 +1478,7 @@ function B:ConstructContainerFrame(name, isBank)
 		f.editBox:Height(15)
 		f.editBox:Point("BOTTOMLEFT", f.holderFrame, "TOPLEFT", (E.Border * 2) + 18, E.Border * 2 + 2)
 		f.editBox:Point("RIGHT", f.vendorGraysButton, "LEFT", -5, 0)
+		f.editBox:Point("RIGHT", f.vendorGreensButton, "LEFT", -5, 0)
 		f.editBox:SetAutoFocus(false)
 		f.editBox:SetScript("OnEscapePressed", B.ResetAndClear)
 		f.editBox:SetScript("OnEnterPressed", function(eb) eb:ClearFocus() end)
@@ -1550,6 +1774,13 @@ function B:PostBagMove()
 	end
 end
 
+local myAceTimer = LibStub("AceTimer-3.0"):Embed(B)
+function B:LOOT_CLOSED()
+	if E.db.bags.deleteGrays.enable == true then
+	GrayDelete_Timer=myAceTimer:ScheduleTimer(DeleteGrays, 0.5)
+	end
+end
+
 function B:MERCHANT_CLOSED()
 	B.SellFrame:Hide()
 
@@ -1577,6 +1808,9 @@ function B:ProgressQuickVendor()
 		if E.db.bags.vendorGrays.details and link then
 			E:Print(format("%s|cFF00DDDDx%d|r %s", link, stackCount, E:FormatMoney(stackPrice, E.db.bags.moneyFormat, not E.db.bags.moneyCoins)))
 		end
+		if E.db.bags.vendorGreens.details and link then
+			E:Print(format("%s|cFF00DDDDx%d|r %s", link, stackCount, E:FormatMoney(stackPrice, E.db.bags.moneyFormat, not E.db.bags.moneyCoins)))
+		end
 		UseContainerItem(bag, slot)
 	end
 
@@ -1600,7 +1834,7 @@ function B:VendorGreys_OnUpdate(elapsed)
 	elseif lastItem then
 		B.SellFrame:Hide()
 		if B.SellFrame.Info.goldGained > 0 then
-			E:Print((L["Vendored gray items for: %s"]):format(E:FormatMoney(B.SellFrame.Info.goldGained, E.db.bags.moneyFormat, not E.db.bags.moneyCoins)))
+			E:Print((L["Vendored items for: %s"]):format(E:FormatMoney(B.SellFrame.Info.goldGained, E.db.bags.moneyFormat, not E.db.bags.moneyCoins)))
 		end
 	end
 end
@@ -1651,9 +1885,15 @@ end
 
 function B:UpdateSellFrameSettings()
 	if not B.SellFrame or not B.SellFrame.Info then return end
-
+	
+	includesoulbound = E.db.bags.vendorGreens.sellsoubound
+	sellvalueNum = E.db.bags.vendorGreens.sellvalue
 	B.SellFrame.Info.SellInterval = E.db.bags.vendorGrays.interval
 	B.SellFrame:SetAlpha(E.db.bags.vendorGrays.progressBar and 1 or 0)
+end
+
+function B:UpdateDeleteGraySettings()
+	deletevalueNum = E.db.bags.deleteGrays.deletevalue
 end
 
 B.BagIndice = {
@@ -1706,6 +1946,10 @@ function B:Initialize()
 	--Creating vendor grays frame
 	B:CreateSellFrame()
 	B:RegisterEvent("MERCHANT_CLOSED")
+	
+	--Delete Greys
+	B:RegisterEvent("LOOT_CLOSED")
+	
 
 	--Bag Mover (We want it created even if Bags module is disabled, so we can use it for default bags too)
 	local BagFrameHolder = CreateFrame("Frame", nil, E.UIParent)
@@ -1723,6 +1967,31 @@ function B:Initialize()
 	end
 
 	B.Initialized = true
+	
+	if E.db.bags.vendorGreens == nil then
+	E.db.bags.vendorGreens = {}
+	E.db.bags.vendorGreens.sellvalue = 30
+	sellvalueNum = 30
+	else
+	sellvalueNum = E.db.bags.vendorGreens.sellvalue
+	end
+	
+	if E.db.bags.vendorGreens.sellsoubound == nil then
+	E.db.bags.vendorGreens.sellsoubound = false
+	else
+	includesoulbound = E.db.bags.vendorGreens.sellsoubound 
+	end
+	
+	--Delete Greys
+	if E.db.bags.deleteGrays == nil then
+	E.db.bags.deleteGrays = {}
+	E.db.bags.deleteGrays.deletevalue = 30
+	E.db.bags.deleteGrays.enable = false
+	deletevalueNum = 99
+	else
+	deletevalueNum = E.db.bags.deleteGrays.deletevalue
+	end
+	
 	B.db = E.db.bags
 
 	B.BagFrames = {}

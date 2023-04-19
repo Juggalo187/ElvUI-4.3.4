@@ -265,6 +265,12 @@ P.bags = {
 		details = false,
 		progressBar = true
 	},
+	vendorGreens = {
+		enable = false,
+		interval = 0.2,
+		details = false,
+		progressBar = true
+	},
 	split = {
 		bagSpacing = 5,
 		bankSpacing = 5,

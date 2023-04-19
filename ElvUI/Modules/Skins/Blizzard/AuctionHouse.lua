@@ -259,10 +259,11 @@ local function LoadSkin()
 
 			if Button then
 				Button:StripTextures()
-
+				if Highlight ~= nil then
 				Highlight:SetTexture(E.Media.Textures.Highlight)
 				Highlight:SetInside()
 				hooksecurefunc(Name, "SetVertexColor", function(_, r, g, b) Highlight:SetVertexColor(r, g, b, 0.35) end)
+				end
 			end
 
 			if ItemButton then
