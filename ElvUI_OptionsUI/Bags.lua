@@ -853,7 +853,6 @@ E.Options.args.bags = {
 					order = 4,
 					type = "toggle",
 					name = L["Include Soulbound"],
-					set = function(info, value) E.db.bags.vendorGreens.sellsoubound = value B:UpdateSellFrameSettings() end
 				},
 				sellvalue = {
 							order = 5,

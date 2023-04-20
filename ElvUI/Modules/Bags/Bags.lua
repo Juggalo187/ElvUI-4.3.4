@@ -1152,7 +1152,9 @@ function DeleteGrays(delete)
 					PickupContainerItem(bag, slot)
 						DeleteCursorItem()
 						if E.db.bags.deleteGrays.details then
-						DEFAULT_CHAT_FRAME:AddMessage("|cFF00DDDD Deleted |r"..name.." x"..stackCount)
+						--DEFAULT_CHAT_FRAME:AddMessage("|cFF00DDDD Deleted |r"..name.." x"..stackCount..""..GetCoinTextureString(itemPrice))
+						local itemtotalvalue = stackCount * itemPrice
+						DEFAULT_CHAT_FRAME:AddMessage("|cFF00DDDD Deleted |r"..stackCount.."x "..name.." "..GetCoinTextureString(itemtotalvalue))
 						end
 					end	
 				end
@@ -1970,16 +1972,13 @@ function B:Initialize()
 	
 	if E.db.bags.vendorGreens == nil then
 	E.db.bags.vendorGreens = {}
+	E.db.bags.vendorGreens.enable = false
 	E.db.bags.vendorGreens.sellvalue = 30
+	E.db.bags.vendorGreens.sellsoubound = false
 	sellvalueNum = 30
 	else
 	sellvalueNum = E.db.bags.vendorGreens.sellvalue
-	end
-	
-	if E.db.bags.vendorGreens.sellsoubound == nil then
-	E.db.bags.vendorGreens.sellsoubound = false
-	else
-	includesoulbound = E.db.bags.vendorGreens.sellsoubound 
+	includesoulbound = E.db.bags.vendorGreens.sellsoubound
 	end
 	
 	--Delete Greys
