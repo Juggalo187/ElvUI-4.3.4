@@ -1,0 +1,11 @@
+﻿## Interface: 40300
+## Title: |cffff7000E|r|cffe5e3e3lvUI|r |cffff7000M|r|cffe5e3e3icrobar|r |cffff7000E|r|cffe5e3e3nhancement|r
+## Author: Darth Predator
+## Version: 1.2
+## RequiredDeps: ElvUI
+## DefaultState: Enabled
+
+Locales\Load_Locales.xml
+Settings\Load_Settings.xml
+ElvUI_MicrobarEnhancement.lua
+Config\Load_Config.xml
