@@ -30,7 +30,7 @@ This UI will arrange your interface to be more flexible and practical.
 <img src="https://user-images.githubusercontent.com/590348/68385409-bd298f00-016a-11ea-82ba-d80277aa14f4.jpg" width="48.5%">
 </a>
 
-## Plugins:
+## Plugins (Included):
 
 [ElvUI_Enhanced](https://github.com/ElvUI-Cataclysm/ElvUI_Enhanced-4.3.4)
 <br />
