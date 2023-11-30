@@ -1146,9 +1146,10 @@ function DeleteGrays(delete)
 			for slot = 1, GetContainerNumSlots(bag), 1 do
 				local itemID = GetContainerItemID(bag, slot)
 				if itemID then
-					local _, name, rarity, _, _, iType, _, _, _, _, itemPrice = GetItemInfo(itemID)
+					local _, name, rarity, _, _, iType, _, itemStackCount, _, _, itemPrice = GetItemInfo(itemID)
 					local stackCount = select(2, GetContainerItemInfo(bag, slot)) or 1
-					if (rarity and rarity == 0) and (iType and iType ~= "Quest") and (itemPrice and itemPrice < (deletevalueNum * 100)) then
+					local totalwithfullstack = itemPrice * itemStackCount
+					if (rarity and rarity == 0) and (iType and iType ~= "Quest") and ((E.db.bags.ignorestackable == true and (itemPrice and totalwithfullstack < (deletevalueNum * 100))) or (E.db.bags.ignorestackable == false and (itemPrice and itemPrice < (deletevalueNum * 100)))) then
 					PickupContainerItem(bag, slot)
 						DeleteCursorItem()
 						if E.db.bags.deleteGrays.details then
@@ -1986,10 +1987,12 @@ function B:Initialize()
 	E.db.bags.deleteGrays = {}
 	E.db.bags.deleteGrays.deletevalue = 30
 	E.db.bags.deleteGrays.enable = false
+	E.db.bags.deleteGrays.ignorestackable = false
 	deletevalueNum = 99
 	else
 	deletevalueNum = E.db.bags.deleteGrays.deletevalue
 	end
+
 	
 	B.db = E.db.bags
 
