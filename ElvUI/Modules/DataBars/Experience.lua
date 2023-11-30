@@ -180,7 +180,20 @@ function DB:ExperienceBar_OnEnter()
 	GameTooltip:Show()
 end
 
-function DB:ExperienceBar_OnClick() end
+--function DB:ExperienceBar_OnClick() end
+	
+function DB:ExperienceBar_OnClick() 
+			local menu = {
+		{ text = " Xp x1", notCheckable = true, func = function() SendChatMessage(".mod xp 1" ,"say"); end },
+		{ text = " Xp x2", notCheckable = true, func = function() SendChatMessage(".mod xp 2" ,"say"); end },
+		{ text = " Xp x3", notCheckable = true, func = function() SendChatMessage(".mod xp 3" ,"say"); end },
+		{ text = "Current", notCheckable = true, func = function() SendChatMessage(".mod xp" ,"say"); end },
+		}
+		
+		local menuFrame = CreateFrame("Frame", "XPR", UIParent, "UIDropDownMenuTemplate")
+
+		EasyMenu(menu, menuFrame, "cursor", 0 , 0, "MENU");
+end
 
 function DB:ExperienceBar_UpdateDimensions()
 	local db = DB.db.experience
