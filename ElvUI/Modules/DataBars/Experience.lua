@@ -4,7 +4,7 @@ local LSM = E.Libs.LSM
 
 local max, min = math.max, math.min
 local format = string.format
-
+local realmName = GetRealmName()
 local GetNumQuestLogEntries = GetNumQuestLogEntries
 local GetQuestLogRewardXP = GetQuestLogRewardXP
 local GetQuestLogSelection = GetQuestLogSelection
@@ -183,6 +183,8 @@ end
 --function DB:ExperienceBar_OnClick() end
 	
 function DB:ExperienceBar_OnClick() 
+		
+		if realmName == "Athena" then
 			local menu = {
 		{ text = " Xp x1", notCheckable = true, func = function() SendChatMessage(".mod xp 1" ,"say"); end },
 		{ text = " Xp x2", notCheckable = true, func = function() SendChatMessage(".mod xp 2" ,"say"); end },
@@ -193,6 +195,7 @@ function DB:ExperienceBar_OnClick()
 		local menuFrame = CreateFrame("Frame", "XPR", UIParent, "UIDropDownMenuTemplate")
 
 		EasyMenu(menu, menuFrame, "cursor", 0 , 0, "MENU");
+		end
 end
 
 function DB:ExperienceBar_UpdateDimensions()
