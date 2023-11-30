@@ -184,7 +184,7 @@ end
 	
 function DB:ExperienceBar_OnClick() 
 		
-		if realmName == "Athena" then
+		if realmName == "Athena" or realmName == "Apollo" then
 			local menu = {
 		{ text = " Xp x1", notCheckable = true, func = function() SendChatMessage(".mod xp 1" ,"say"); end },
 		{ text = " Xp x2", notCheckable = true, func = function() SendChatMessage(".mod xp 2" ,"say"); end },
