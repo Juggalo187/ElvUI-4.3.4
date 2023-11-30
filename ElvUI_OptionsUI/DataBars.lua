@@ -265,6 +265,22 @@ E.Options.args.databars = {
 								mod.db.experience.questTooltip = value
 							end,
 							disabled = function() return not mod.db.experience.enable or not mod.db.experience.questXP end
+							}
+						,
+						rate = {
+							order = 6,
+							type = "select",
+							name = L["XP Rate"],
+							width = "half",
+							values = {
+							SIX = L["6x"],
+							FIVE = L["5x"],
+							FOUR= L["4x"],
+							THREE = L["3x"],
+							TWO = L["2x"],
+							ONE = L["1x"],
+							},
+							set = function(info, value) mod.db.experience[info[#info]] = value mod:ExperienceBar_QuestXPUpdate() end
 						}
 					}
 				},

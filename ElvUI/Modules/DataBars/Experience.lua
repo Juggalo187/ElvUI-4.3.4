@@ -20,6 +20,7 @@ local function getQuestXP(completedOnly, zoneOnly)
 	local lastQuestLogID = GetQuestLogSelection()
 	local zoneText = GetZoneText()
 	local totalExp = 0
+	local rate = DB.db.experience.rate
 	local locationName
 
 	for questIndex = 1, GetNumQuestLogEntries() do
@@ -34,6 +35,29 @@ local function getQuestXP(completedOnly, zoneOnly)
 	end
 
 	SelectQuestLogEntry(lastQuestLogID)
+	if rate == "SIX" then
+				serverrate = 6
+			elseif rate == "FIVE" then
+				serverrate = 5
+			elseif rate == "FOUR" then
+				serverrate = 4
+			elseif rate == "THREE" then
+				serverrate = 3
+			elseif rate == "TWO" then
+				serverrate = 2
+			elseif rate == "ONE" then
+				serverrate = 1
+			elseif rate == nil then
+				DB.db.experience.rate = "THREE" 
+				serverrate = 3
+			end
+			
+			realmName = GetRealmName()
+	if realmName == "Athena" then
+	totalExp = totalExp * serverrate
+	else 
+	totalExp = totalExp
+	end
 
 	return totalExp
 end
