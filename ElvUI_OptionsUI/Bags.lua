@@ -823,6 +823,13 @@ E.Options.args.bags = {
 							type = "range",
 							min = 1, max = 99, step = 1
 						}
+						,
+				ignorestackable = {
+							order = 4,
+							type = "toggle",
+							name = L["Ignore Stackable"],
+							desc = L["Don't Delete if full stack would be more than Set Sell Price Threshold."]
+						}
 			}
 		},
 		vendorGreens = {
