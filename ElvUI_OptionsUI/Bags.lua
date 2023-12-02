@@ -819,16 +819,10 @@ E.Options.args.bags = {
 				},
 				deletevalue = {
 							order = 3,
-							name = L["Sell Price Below (Silver)"],
+							name = L["Item Value (Silver)"],
 							type = "range",
-							min = 1, max = 99, step = 1
-						}
-						,
-				ignorestackable = {
-							order = 4,
-							type = "toggle",
-							name = L["Ignore Stackable"],
-							desc = L["Don't Delete if full stack would be more than Set Sell Price Threshold."]
+							min = 1, max = 99, step = 1,
+							desc = L["If a full stack of the item is less than this it will be deleted."]
 						}
 			}
 		},
