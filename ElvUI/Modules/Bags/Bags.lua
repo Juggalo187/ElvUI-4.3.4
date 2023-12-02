@@ -1896,6 +1896,22 @@ function B:UpdateSellFrameSettings()
 	B.SellFrame:SetAlpha(E.db.bags.vendorGrays.progressBar and 1 or 0)
 end
 
+StaticPopupDialogs["SKULYOUTPUT"] = {
+	text = "%s",
+	button1 = "OK",
+	timeout = 0,
+	whileDead = true,
+	hideOnEscape = true,
+}
+
+function B:Skulychatoutput()
+	deletevalueNum = E.db.bags.deleteGrays.deletevalue
+	local testvalue = deletevalueNum * 100
+	local sendtopopup = GetCoinTextureString(testvalue)
+	--DEFAULT_CHAT_FRAME:AddMessage("Item Value (Silver) = "..GetCoinTextureString(testvalue))
+	StaticPopup_Show ("SKULYOUTPUT", sendtopopup)
+end
+
 function B:UpdateDeleteGraySettings()
 	deletevalueNum = E.db.bags.deleteGrays.deletevalue
 end

@@ -821,9 +821,17 @@ E.Options.args.bags = {
 							order = 3,
 							name = L["Item Value (Silver)"],
 							type = "range",
-							min = 1, max = 99, step = 1,
+							min = 1, max = 500, step = 1,
 							desc = L["If a full stack of the item is less than this it will be deleted."]
-						}
+						},
+				Test = {
+					order = 4,
+					type = "execute",
+					name = L["Check Value"],
+					customWidth = 100,
+					func = function() B:Skulychatoutput() end
+				}
+						
 			}
 		},
 		vendorGreens = {
