@@ -129,14 +129,18 @@ local function LoadSkin()
 		button:CreateBackdrop()
 		button:SetFrameLevel(button:GetFrameLevel() + 1)
 
+		if button:GetHighlightTexture() then
 		button:GetHighlightTexture():SetAllPoints(icon)
+		end
+		
 		hooksecurefunc(button, "SetHighlightTexture", function(self, texture)
 			if texture == [[Interface\Buttons\ButtonHilight-Square]] then
 				self:GetHighlightTexture():SetTexture(1, 1, 1, 0.3)
 			end
 		end)
-
+		if button:GetPushedTexture() then
 		button:GetPushedTexture():SetAllPoints(icon)
+		end
 		hooksecurefunc(button, "SetPushedTexture", function(self, texture)
 			if texture == [[Interface\Buttons\UI-Quickslot-Depress]] then
 				self:GetPushedTexture():SetTexture(0.9, 0.8, 0.1, 0.3)
