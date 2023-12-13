@@ -207,6 +207,7 @@ P.databars = {
 --Bags
 P.bags = {
 	sortInverted = true,
+	sortnotice = true,
 	bagSize = 34,
 	bagWidth = 406,
 	bagButtonSpacing = 1,
@@ -218,6 +219,7 @@ P.bags = {
 	moneyCoins = true,
 	junkIcon = false,
 	junkDesaturate = true,
+	deleteItems = {},
 	ignoredItems = {},
 	itemLevel = true,
 	itemLevelThreshold = 1,
@@ -267,9 +269,17 @@ P.bags = {
 	},
 	vendorGreens = {
 		enable = false,
-		interval = 0.2,
 		details = false,
-		progressBar = true
+		interval = 0.2,
+		progressBar = true,
+		sellsoubound = false,
+		sellvalue = 1
+	},
+	deleteGrays = {
+		enable = false,
+		junkList = false,
+		details = false,
+		deletevalue = 1
 	},
 	split = {
 		bagSpacing = 5,
@@ -1309,6 +1319,8 @@ P.tooltip = {
 	cursorAnchorY = 0,
 	alwaysShowRealm = false,
 	targetInfo = true,
+	MaxStack = true,
+	MaxStackValue= true,
 	playerTitles = true,
 	guildRanks = true,
 	itemCount = "BAGS_ONLY",

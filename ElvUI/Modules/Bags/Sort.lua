@@ -7,6 +7,9 @@ local strmatch, gmatch, strfind = strmatch, gmatch, strfind
 local tinsert, tremove, sort, wipe = tinsert, tremove, sort, wipe
 local tonumber, floor, band = tonumber, floor, bit.band
 
+local debugf = tekDebug and tekDebug:GetFrame("Bags")
+local function Debug(...) if debugf then debugf:AddMessage(string.join(", ", tostringall(...))) end end
+
 local ContainerIDToInventoryID = ContainerIDToInventoryID
 local GetAuctionItemClasses = GetAuctionItemClasses
 local GetAuctionItemSubClasses = GetAuctionItemSubClasses
@@ -201,9 +204,9 @@ local function DefaultSort(a, b)
 	if aID == bID then
 		local aCount = bagStacks[a]
 		local bCount = bagStacks[b]
-		if aCount and bCount and aCount == bCount then
+		if aCount == bCount then
 			return aOrder < bOrder
-		elseif aCount and bCount then
+		else 
 			return aCount < bCount
 		end
 	end
@@ -232,9 +235,9 @@ local function DefaultSort(a, b)
 	local aItemClassId, aItemSubClassId = itemTypes[aType] or 99, itemSubTypes[aType] and itemSubTypes[aType][aSubType] or 99
 	local bItemClassId, bItemSubClassId = itemTypes[bType] or 99, itemSubTypes[bType] and itemSubTypes[bType][bSubType] or 99
 
-	if aItemClassId ~= bItemClassId then
-		return aItemClassId < bItemClassId
-	end
+	-- if aItemClassId ~= bItemClassId then
+		-- return aItemClassId < bItemClassId
+	-- end
 
 	if aItemClassId == ARMOR or aItemClassId == ENCHSLOT_WEAPON then
 		aEquipLoc = inventorySlots[aEquipLoc] or -1
@@ -299,7 +302,7 @@ end
 local function IterateBackwards(bagList, i)
 	i = i + 1
 	local step = 1
-	for ii = #bagList, 1, -1 do
+	for ii = #bagList, 1, 1 do
 		local bag = bagList[ii]
 		local slots = B:GetNumSlots(bag, bagRole)
 		if i > slots + step then
@@ -514,6 +517,7 @@ end
 local blackListedSlots = {}
 local blackList = {}
 local blackListQueries = {}
+
 function B:BuildBlacklist(...)
 	for entry in pairs(...) do
 		local itemName = GetItemInfo(entry)
@@ -542,11 +546,10 @@ function B.Sort(bags, sorter, invertDirection)
 	--Build blacklist of items based on the profile and global list
 	B:BuildBlacklist(B.db.ignoredItems)
 	B:BuildBlacklist(E.global.bags.ignoredItems)
-
+	
 	for i, bag, slot in B:IterateBags(bags, nil, "both") do
 		local bagSlot = B:Encode_BagSlot(bag, slot)
 		local link = B:GetItemLink(bag, slot)
-
 		if link then
 			if blackList[GetItemInfo(link)] then
 				blackListedSlots[bagSlot] = true
@@ -567,6 +570,8 @@ function B.Sort(bags, sorter, invertDirection)
 					end
 				end
 			end
+			
+			
 		end
 
 		if not blackListedSlots[bagSlot] then
@@ -576,6 +581,7 @@ function B.Sort(bags, sorter, invertDirection)
 	end
 
 	sort(bagSorted, sorter)
+	for i,s in ipairs(bagSorted) do Debug("SORTED", i, B:GetItemLink(B:Decode_BagSlot(s))) end
 
 	local passNeeded = true
 	while passNeeded do
@@ -631,7 +637,6 @@ function B.Fill(sourceBags, targetBags, reverse, canMove)
 	--Build blacklist of items based on the profile and global list
 	B:BuildBlacklist(B.db.ignoredItems)
 	B:BuildBlacklist(E.global.bags.ignoredItems)
-
 	for _, bag, slot in B:IterateBags(targetBags, reverse, "deposit") do
 		local bagSlot = B:Encode_BagSlot(bag, slot)
 		if not bagIDs[bagSlot] then
@@ -660,29 +665,32 @@ function B.SortBags(...)
 	for i = 1, select("#", ...) do
 		local bags = select(i, ...)
 		for _, slotNum in ipairs(bags) do
+			Debug("Considering bag", bag)
 			local bagType = B:IsSpecialtyBag(slotNum)
 			if bagType == false then bagType = "Normal" end
 			if not bagCache[bagType] then bagCache[bagType] = {} end
 			tinsert(bagCache[bagType], slotNum)
+			Debug(" went with", bag, bagtype)
 		end
 
 		for bagType, sortedBags in pairs(bagCache) do
 			if bagType ~= "Normal" then
+				Debug("Moving to normal from", bagtype)
 				B.Stack(sortedBags, sortedBags, B.IsPartial)
 				B.Stack(bagCache.Normal, sortedBags)
-				B.Fill(bagCache.Normal, sortedBags, B.db.sortInverted)
-				B.Sort(sortedBags, nil, B.db.sortInverted)
+				B.Fill(bagCache.Normal, sortedBags, B.db.sortInverted) --skuly B.db.sortInverted
+				B.Sort(sortedBags, nil, B.db.sortInverted) --skuly B.db.sortInverted
 				wipe(sortedBags)
 			end
 		end
 
 		if bagCache.Normal then
 			B.Stack(bagCache.Normal, bagCache.Normal, B.IsPartial)
-			B.Sort(bagCache.Normal, nil, B.db.sortInverted)
+			B.Sort(bagCache.Normal, nil, B.db.sortInverted) --skuly B.db.sortInverted
 			wipe(bagCache.Normal)
 		end
 		wipe(bagCache)
-		wipe(bagGroups)
+		--wipe(bagGroups)
 	end
 end
 
@@ -740,13 +748,17 @@ function B:StopStacking(message, noUpdate)
 	if message then
 		E:Print(message)
 	end
+	
+		if (E.db.bags.deleteGrays.enable or E.db.bags.deleteGrays.junkList) then
+			GrayDelete_Timer=myAceTimer:ScheduleTimer(DeleteGrays, 0.6)
+		end
 end
+
 
 function B:DoMove(move)
 	if GetCursorInfo() == "item" then
 		return false, "cursorhasitem"
 	end
-
 	local source, target = B:DecodeMove(move)
 	local sourceBag, sourceSlot = B:Decode_BagSlot(source)
 	local targetBag, targetSlot = B:Decode_BagSlot(target)
@@ -755,6 +767,13 @@ function B:DoMove(move)
 	local _, targetCount, targetLocked = B:GetItemInfo(targetBag, targetSlot)
 
 	if sourceLocked or targetLocked then
+		-- if sourceLocked then
+			-- DEFAULT_CHAT_FRAME:AddMessage("SOURCE-- Bag "..sourceBag.." slot "..sourceSlot.." is Locked".." Target was "..targetBag.." slot "..targetSlot)
+		-- end
+		-- if targetLocked then
+			-- DEFAULT_CHAT_FRAME:AddMessage("TARGET-- Bag "..targetBag.." slot "..targetSlot.." is Locked".." Source was "..sourceBag.." slot "..sourceSlot)
+		-- end
+	
 		return false, "source/target_locked"
 	end
 
@@ -767,6 +786,7 @@ function B:DoMove(move)
 		else
 			return B:StopStacking(L["Confused.. Try Again!"])
 		end
+			
 	end
 
 	local stackSize = select(8, GetItemInfo(sourceItemID))
@@ -817,34 +837,44 @@ function B:DoMoves()
 		end
 	end
 
-	if lockStop then
-		for slot, itemID in pairs(moveTracker) do
-			local actualItemID = B:GetItemID(B:Decode_BagSlot(slot))
-			if actualItemID ~= itemID then
+	-- if lockStop then
+		-- for slot, itemID in pairs(moveTracker) do
+			-- local actualItemID = B:GetItemID(B:Decode_BagSlot(slot))
+			-- if actualItemID ~= itemID then
+				-- WAIT_TIME = 0.1
+				-- if (GetTime() - lockStop) > MAX_MOVE_TIME then
+					-- if lastMove and moveRetries < 100 then
+						-- local success, moveID, moveSource, targetID, moveTarget, wasGuild = B:DoMove(lastMove)
+						-- WAIT_TIME = wasGuild and 0.5 or 0.1
+
+						-- if not success then
+							-- lockStop = GetTime()
+							-- moveRetries = moveRetries + 1
+							-- return
+						-- end
+
+						-- moveTracker[moveSource] = targetID
+						-- moveTracker[moveTarget] = moveID
+						-- lastDestination = moveTarget
+						-- -- lastMove = moves[i] --Where does "i" come from???
+						-- lastItemID = moveID
+						-- -- tremove(moves, i) --Where does "i" come from???
+						-- return
+					-- end
+
+					-- B:StopStacking()
+					-- return
+				-- end
+				-- return --give processing time to happen
+			-- end
+			-- moveTracker[slot] = nil
+		-- end
+	-- end
+	
+	if lock_stop then
+		for slot,itemid in pairs(moveTracker) do
+			if B:ConvertLinkToID(B:GetItemLink(B:Decode_BagSlot(slot))) ~= itemid then
 				WAIT_TIME = 0.1
-				if (GetTime() - lockStop) > MAX_MOVE_TIME then
-					if lastMove and moveRetries < 100 then
-						local success, moveID, moveSource, targetID, moveTarget, wasGuild = B:DoMove(lastMove)
-						WAIT_TIME = wasGuild and 0.5 or 0.1
-
-						if not success then
-							lockStop = GetTime()
-							moveRetries = moveRetries + 1
-							return
-						end
-
-						moveTracker[moveSource] = targetID
-						moveTracker[moveTarget] = moveID
-						lastDestination = moveTarget
-						-- lastMove = moves[i] --Where does "i" come from???
-						lastItemID = moveID
-						-- tremove(moves, i) --Where does "i" come from???
-						return
-					end
-
-					B:StopStacking()
-					return
-				end
 				return --give processing time to happen
 			end
 			moveTracker[slot] = nil
@@ -854,29 +884,65 @@ function B:DoMoves()
 	lastItemID, lockStop, lastDestination, lastMove = nil, nil, nil, nil
 	wipe(moveTracker)
 
-	local success, moveID, targetID, moveSource, moveTarget, wasGuild
-	if #moves > 0 then
-		for i = #moves, 1, -1 do
-			success, moveID, moveSource, targetID, moveTarget, wasGuild = B:DoMove(moves[i])
-			if not success then
-				WAIT_TIME = wasGuild and 0.3 or 0.1
-				lockStop = GetTime()
-				return
-			end
-			moveTracker[moveSource] = targetID
-			moveTracker[moveTarget] = moveID
-			lastDestination = moveTarget
-			lastMove = moves[i]
-			lastItemID = moveID
-			tremove(moves, i)
+	-- local success, moveID, targetID, moveSource, moveTarget, wasGuild
+	-- if #moves > 0 then
+		-- for i = #moves, 1, -1 do
+			-- success, moveID, moveSource, targetID, moveTarget, wasGuild = B:DoMove(moves[i])
+			-- if not success then
+				-- WAIT_TIME = wasGuild and 0.3 or 0.1
+				-- lockStop = GetTime()
+				-- return
+			-- end
+			-- moveTracker[moveSource] = targetID
+			-- moveTracker[moveTarget] = moveID
+			-- lastDestination = moveTarget
+			-- lastMove = moves[i]
+			-- lastItemID = moveID
+			-- tremove(moves, i)
 
-			if moves[i - 1] then
-				WAIT_TIME = wasGuild and 0.3 or 0
+			-- if moves[i - 1] then
+				-- WAIT_TIME = wasGuild and 0.3 or 0
+				-- return
+			-- end
+		-- end
+	-- end
+	-- B:StopStacking()
+	
+	local start, success, move_id, target_id, move_source, move_target, was_guild
+	start = GetTime()
+	if #moves > 0 then for i=#moves, 1, -1 do
+		success, move_id, move_source, target_id, move_target, was_guild = B:DoMove(moves[i])
+		if not success then
+			WAIT_TIME = wasGuild and 0.3 or 0.1
+			lock_stop = true
+			return -- take a break!
+		end
+		moveTracker[move_source] = target_id
+		moveTracker[move_target] = move_id
+		lastItemID = move_id
+		table.remove(moves, i)
+		if moves[i-1] then
+			-- Guild bank CursorHasItem/CursorItemInfo isn't working, so slow down for it.
+			if was_guild then
+				local next_source, next_target = B:DecodeMove(moves[i-1])
+				if moveTracker[next_source] or moveTracker[next_target] then
+					Debug("fake-guild-locking is in effect", core.db.conservative_guild and "conservative" or "locking")
+					WAIT_TIME = 0.3
+					lock_stop = true
+					return
+				end
+			end
+			if (GetTime() - start) > 0.05 then
+				-- avoiding the lags
+				WAIT_TIME = 0
 				return
 			end
 		end
-	end
+	end end
+	
+	
 	B:StopStacking()
+	
 end
 
 function B:GetGroup(id)
@@ -914,6 +980,7 @@ function B:CommandDecorator(func, groupsDefaults)
 				end
 			end
 		end
+
 
 		B:ScanBags()
 		if func(unpack(bagGroups)) == false then

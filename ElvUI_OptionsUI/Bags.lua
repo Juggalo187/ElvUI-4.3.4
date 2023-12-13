@@ -801,15 +801,21 @@ E.Options.args.bags = {
 		deleteGrays = {
 			order = 7,
 			type = "group",
-			name = L["Delete Grays"],
+			name = L["Auto Delete Items"],
 			get = function(info) return E.db.bags.deleteGrays[info[#info]] end,
 			set = function(info, value) E.db.bags.deleteGrays[info[#info]] = value B:UpdateDeleteGraySettings() end,
 			args = {
 				enable = {
 					order = 1,
 					type = "toggle",
-					name = L["Auto Delete Greys"],
-					desc = L["Automatically delete grey when looting."]
+					name = L["Auto Delete Junk"],
+					desc = L["Automatically delete Junk when looting."]
+				},
+				junkList = {
+					order = 1,
+					type = "toggle",
+					name = L["Auto Delete List"],
+					desc = L["Automatically delete items in list."]
 				},
 				details = {
 					order = 2,
@@ -819,10 +825,10 @@ E.Options.args.bags = {
 				},
 				deletevalue = {
 							order = 3,
-							name = L["Item Value (Silver)"],
+							name = L["Grey/Junk Item Value (Silver)"],
 							type = "range",
 							min = 1, max = 500, step = 1,
-							desc = L["If a full stack of the item is less than this it will be deleted."]
+							desc = L["If sell price of the item is less than this it will be deleted."]
 						},
 				Test = {
 					order = 4,
@@ -830,6 +836,85 @@ E.Options.args.bags = {
 					name = L["Check Value"],
 					customWidth = 100,
 					func = function() B:Skulychatoutput() end
+				},
+				spacer = {
+					order = 5,
+					type = "description",
+					name = " "
+				},
+				description = {
+					order = 6,
+					type = "description",
+					name = L["Here you can add items that you want to be automatically deleted. To remove an item just click on its name in the list."]
+				},
+				adddeleteEntryGroup = {
+					order = 7,
+					type = "group",
+					name = L["Add Item by Name,ID or Drag/Drop"],
+					guiInline = true,
+					args = {
+						adddeleteEntryProfile = {
+							order = 1,
+							type = "input",
+							name = L["Profile"],
+							desc = L["Add an item to the delete list."],
+							get = function(info) return "" end,
+							set = function(info, value)
+								if value == "" or gsub(value, "%s+", "") == "" then return end --Don't allow empty entries
+								--Store by itemID if possible
+									local itemID = 0
+									local islink = match(value, "item:(%d+)")
+									local isnumber = tonumber(value)
+									local valueID = 0
+									local iname = ""
+									
+									if isnumber then
+												valueID = value
+												iname = select(1, GetItemInfo(valueID))
+									elseif islink then
+												valueID = B:ConvertLinkToID(value)
+												iname = select(1, GetItemInfo(valueID))
+										else
+											for k,v in pairs(Skulyitemcache) do
+												if string.lower(value) == string.lower(v) then
+														valueID = tonumber(k)
+														iname = select(1, GetItemInfo(tonumber(k)))
+												end
+											end
+									end
+											
+											itemID = tonumber(valueID)
+											local itemlink = select(2, GetItemInfo(itemID))
+											local itemname = select(1, GetItemInfo(itemID))
+											
+											if itemlink then
+												E:Print(itemlink.."|CFF35948E added to your delete list.|r")
+											else
+												E:Print("You entered [|CFFD4B961"..string.upper(value).."|r], please make sure that is the correct Item Name or ID.")
+											end
+											
+											E.db.bags.deleteItems[tonumber(itemID)] = itemname
+											B:UpdateListAdd(itemID)
+							end
+						},
+						spacer = {
+							order = 2,
+							type = "description",
+							name = " ",
+							width = "normal"
+						},
+					}
+				},
+				adddeleteEntriesProfile = {
+					order = 8,
+					type = "multiselect",
+					name = L["Items to Delete"],
+					values = function() return E.db.bags.deleteItems end,
+					get = function(info, value)	return E.db.bags.deleteItems[value] end,
+					set = function(info, value)
+						E.db.bags.deleteItems[value] = nil B:UpdateListRemove(value)
+						GameTooltip:Hide() --Make sure tooltip is properly hidden
+					end
 				}
 						
 			}
@@ -839,7 +924,7 @@ E.Options.args.bags = {
 			type = "group",
 			name = L["Vendor Greens"],
 			get = function(info) return E.db.bags.vendorGreens[info[#info]] end,
-			set = function(info, value) E.db.bags.vendorGreens[info[#info]] = value B:UpdateSellFrameSettings() end,
+			set = function(info, value) E.db.bags.vendorGreens[info[#info]] = value B:UpdateGreensSellFrameSettings() end,
 			args = {
 				enable = {
 					order = 1,
@@ -877,24 +962,41 @@ E.Options.args.bags = {
 			name = L["Bag Sorting"],
 			disabled = function() return not E.Bags.Initialized end,
 			args = {
-				sortInverted = {
+				autosort = {
 					order = 1,
+					type = "toggle",
+					name = L["Auto Sort"],
+					desc = L["Automatically sort after looting corpses."]
+				},
+				sortnotice = {
+					order = 3,
+					type = "toggle",
+					name = L["In-combat notice"],
+					desc = L["This will print message in chat that you are in combat if you try to loot while in combat."]
+				},
+				sortInverted = {
+					order = 4,
 					type = "toggle",
 					name = L["Sort Inverted"],
 					desc = L["Direction the bag sorting will use to allocate the items."]
 				},
 				spacer = {
-					order = 2,
+					order = 5,
+					type = "description",
+					name = " "
+				},
+				spacer = {
+					order = 6,
 					type = "description",
 					name = " "
 				},
 				description = {
-					order = 3,
+					order = 7,
 					type = "description",
 					name = L["Here you can add items or search terms that you want to be excluded from sorting. To remove an item just click on its name in the list."]
 				},
 				addEntryGroup = {
-					order = 4,
+					order = 8,
 					type = "group",
 					name = L["Add Item or Search Syntax"],
 					guiInline = true,
