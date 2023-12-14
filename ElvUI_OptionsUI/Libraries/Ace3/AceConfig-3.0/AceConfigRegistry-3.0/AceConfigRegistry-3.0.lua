@@ -72,6 +72,7 @@ local basekeys={
 	type=isstring,
 	name=isstringfunc,
 	desc=optstringfunc,
+	itemLink=optstring,
 	descStyle=optstring,
 	order=optmethodnumber,
 	validate=optmethodfalse,

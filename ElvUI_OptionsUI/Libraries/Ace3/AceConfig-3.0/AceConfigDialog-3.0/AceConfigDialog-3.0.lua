@@ -190,6 +190,7 @@ local allIsLiteral = {
 	descStyle = true,
 	imageWidth = true,
 	imageHeight = true,
+	itemLink = true
 }
 
 --gets the value for a member that could be a function
@@ -547,6 +548,7 @@ local function OptionOnMouseOver(widget, event)
 	local userText = opt.type == "multiselect"
 	local softText = opt.softMin or opt.softMax
 	local bigText = opt.bigStep
+	local itemLink = GetOptionsMemberValue("itemLink", opt, options, path, appName)
 	local Min, Max, Step
 
 	if softText then
@@ -561,11 +563,17 @@ local function OptionOnMouseOver(widget, event)
 		bigText = Step ~= ""
 	end
 
-	if descText or usageText or userText or softText or bigText then
+	if descText or usageText or userText or softText or bigText or itemLink then
 		local tooltip = AceConfigDialog.tooltip
 		tooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
 		tooltip:SetText(name, 1, .82, 0, true)
 
+		if itemLink then
+			tooltip:SetHyperlink(itemLink)
+			tooltip:Show()
+			return
+		end
+	
 		if userText then
 			tooltip:AddLine(user.text, 0.5, 0.5, 0.8, true)
 		end
