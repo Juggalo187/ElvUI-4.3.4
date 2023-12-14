@@ -122,6 +122,7 @@ G.unitframe.aurafilters.TurtleBuffs = {
 		[62618] = Defaults(),	-- Power Word: Barrier
 	-- Druid
 		[22812] = Defaults(2),	-- Barkskin
+		[22842] = Defaults(),	-- Frenzied Regeneration
 		[61336] = Defaults(),	-- Survival Instinct
 	-- Hunter
 		[19263] = Defaults(5),	-- Deterrence
@@ -346,6 +347,7 @@ G.unitframe.aurafilters.RaidDebuffs = {
 	-- Baradin Hold
 		-- Argaloth
 		[95173] = Defaults(),	-- Consuming Darkness
+		[95172] = Defaults(),	-- Meteor Slash
 		-- Occu'thar
 		[96913] = Defaults(),	-- Searing Shadows
 		-- Alizabal
@@ -355,45 +357,79 @@ G.unitframe.aurafilters.RaidDebuffs = {
 		-- Magmaw
 		[91911] = Defaults(),	-- Constricting Chains
 		[94679] = Defaults(),	-- Parasitic Infection
+		[94678] = Defaults(),	-- Parasitic Infection HC
+		[79773] = Defaults(),	-- Mangle NM
+		[94616] = Defaults(),	-- Mangle HC
 		[94617] = Defaults(),	-- Mangle
 		[78199] = Defaults(),	-- Sweltering Armor
 		-- Omnotron Defense System
 		[91433] = Defaults(),	-- Lightning Conductor
+		[91432] = Defaults(),	-- Lightning Conductor HC
+		[79888] = Defaults(),	-- Lightning Conductor NM
 		[91521] = Defaults(),	-- Incineration Security Measure
 		[80094] = Defaults(),	-- Fixate
+		[92023] = Defaults(),	-- Encasing Shadows
 		[91535] = Defaults(),	-- Flamethrower
+		[91532] = Defaults(),	-- Flamethrower HC
+		[91472] = Defaults(),	-- Chemical Cloud
 		[80161] = Defaults(),	-- Chemical Cloud
+		[80164] = Defaults(),	-- Chemical Cloud NM
 		[92035] = Defaults(),	-- Acquiring Target
+		[79501] = Defaults(),	-- Acquiring Target NM
 		[79835] = Defaults(),	-- Poison Soaked Shell
 		[91555] = Defaults(),	-- Power Generator
+		[91556] = Defaults(),	-- Power Generator
+		[79629] = Defaults(),	-- Power Generator NM
 		[92048] = Defaults(),	-- Shadow Infusion
 		[92053] = Defaults(),	-- Shadow Conductor
 		-- Maloriak
 		[77699] = Defaults(),	-- Flash Freeze
+		[92979] = Defaults(),	-- Flash Freeze HC
 		[77760] = Defaults(),	-- Biting Chill
 		[92754] = Defaults(),	-- Engulfing Darkness
+		[92982] = Defaults(),	-- Engulfing Darkness HC
+		[92972] = Defaults(),	-- Consuming Flames HC
+		[77786] = Defaults(),	-- Consuming Flames NM
 		[92971] = Defaults(),	-- Consuming Flames
 		[92989] = Defaults(),	-- Rend
+		[92990] = Defaults(),	-- Rend HC
+		[78034] = Defaults(),	-- Rend NM
 		-- Atramedes
+		[92422] = Defaults(),	-- Searing Flame HC
 		[92423] = Defaults(),	-- Searing Flame
+		[92484] = Defaults(),	-- Roaring Flame HC
 		[92485] = Defaults(),	-- Roaring Flame
+		[78023] = Defaults(),	-- Roaring Flame NM
 		[92407] = Defaults(),	-- Sonic Breath
 		[78092] = Defaults(),	-- Tracking
 		-- Chimaeron
 		[82881] = Defaults(),	-- Break
 		[89084] = Defaults(),	-- Low Health
+		[82890] = Defaults(),	-- Mortality HC/NM
 		-- Nefarian
 		[81114] = Defaults(),	-- Magma
+		[81118] = Defaults(),	-- Magma NM
+		[94074] = Defaults(),	-- Magma HC
 		[94128] = Defaults(),	-- Tail Lash
+		[94129] = Defaults(),	-- Tail Lash HC
+		[77827] = Defaults(),	-- Tail Lash NM
 		[79339] = Defaults(),	-- Explosive Cinders
 		[79318] = Defaults(),	-- Dominion
 	-- The Bastion of Twilight
 		-- Halfus Wyrmbreaker
+		[83908] = Defaults(),	-- Malevolent Strikes NM
+		[86158] = Defaults(),	-- Malevolent Strikes HC
+		[83710] = Defaults(),	-- Furious Roar NM
 		[39171] = Defaults(),	-- Malevolent Strikes
-		[83710] = Defaults(),	-- Furious Roar
+		[86170] = Defaults(),	-- Furious Roar HC
 		-- Valiona & Theralion
+		[86788] = Defaults(),	-- Blackout NM
 		[92878] = Defaults(),	-- Blackout
+		[92877] = Defaults(),	-- Blackout HC
 		[86840] = Defaults(),	-- Devouring Flames
+		[86622] = Defaults(),	-- Engulfing Magic NM
+		[95640] = Defaults(),	-- Engulfing Magic HC
+		[86214] = Defaults(),	-- Twilight Zone NH
 		[95639] = Defaults(),	-- Engulfing Magic
 		[92886] = Defaults(),	-- Twilight Zone
 		[88518] = Defaults(),	-- Twilight Meteorite
@@ -406,13 +442,20 @@ G.unitframe.aurafilters.RaidDebuffs = {
 		[92518] = Defaults(),	-- Flame Torrent
 		[83099] = Defaults(),	-- Lightning Rod
 		[92075] = Defaults(),	-- Gravity Core
+		[92538] = Defaults(),	-- Gravity Core (Spread)
 		[92488] = Defaults(),	-- Gravity Crush
 		[82660] = Defaults(),	-- Burning Blood
 		[82665] = Defaults(),	-- Heart of Ice
 		[83500] = Defaults(),	-- Swirling Winds
 		[83581] = Defaults(),	-- Grounded
 		[92067] = Defaults(),	-- Static Overload
+		[92467] = Defaults(),	-- Static Overload (Spread)
+		[92538] = Defaults(),	-- Gravity Core (Spread)
 		-- Cho'gall
+		[93155] = Defaults(),	-- Cho's Blast
+		[82518] = Defaults(),	-- Cho's Blast NM
+		[93152] = Defaults(),	-- Gall's Blast
+		[82523] = Defaults(),	-- Gall's Blast NM
 		[86028] = Defaults(),	-- Cho's Blast
 		[86029] = Defaults(),	-- Gall's Blast
 		[93187] = Defaults(),	-- Corrupted Blood
@@ -420,20 +463,28 @@ G.unitframe.aurafilters.RaidDebuffs = {
 		[82170] = Defaults(),	-- Corruption: Absolute
 		[93200] = Defaults(),	-- Corruption: Sickness
 		[82411] = Defaults(),	-- Debilitating Beam
+		[93133] = Defaults(),	-- Debilitating Beam HC
 		[91317] = Defaults(),	-- Worshipping
+		[93366] = Defaults(),	-- Worshipping HC
 		-- Sinestra
 		[92956] = Defaults(),	-- Wrack
+		[89435] = Defaults(),	-- Wrack
+		[89421] = Defaults(),	-- Wrack 2
 	-- Throne of the Four Winds
 		-- Nezir
 		[93131] = Defaults(),	-- Ice Patch
 		-- Anshal
 		[86206] = Defaults(),	-- Soothing Breeze
+		[93121] = Defaults(),	-- Toxic Spores HC
 		[93122] = Defaults(),	-- Toxic Spores
 		-- Rohash
 		[93058] = Defaults(),	-- Slicing Gale
+		[93057] = Defaults(),	-- Slicing Gale HC
 		-- Al'Akir
 		[93260] = Defaults(),	-- Ice Storm
 		[93295] = Defaults(),	-- Lightning Rod
+		[89666] = Defaults(),	-- Lightning Rod NM
+		[89668] = Defaults(),	-- Lightning Rod NM 2
 		[87873] = Defaults(),	-- Static Shock
 		[87856] = Defaults(),	-- Squall Line
 		[88427] = Defaults(),	-- Electrocute
@@ -443,6 +494,7 @@ G.unitframe.aurafilters.RaidDebuffs = {
 		[97202] = Defaults(),	-- Fiery Web Spin
 		[49026] = Defaults(),	-- Fixate
 		[97079] = Defaults(),	-- Seeping Venom
+		[100048] = Defaults(),	-- Fiery Web Silk
 		-- Alysrazor
 		[99389] = Defaults(),	-- Imprinted
 		[101296] = Defaults(),	-- Fiero Blast
@@ -450,27 +502,49 @@ G.unitframe.aurafilters.RaidDebuffs = {
 		[101729] = Defaults(),	-- Blazing Claw
 		[100640] = Defaults(),	-- Harsh Winds
 		[100555] = Defaults(),	-- Smouldering Roots
-		-- Shannox
+		-- Shannox	ID: 53691
 		[99837] = Defaults(),	-- Crystal Prison
 		[99937] = Defaults(),	-- Jagged Tear
+		[101219] = Defaults(),	-- Jagged Tear HC
+		[101209] = Defaults(),	-- Immolation Trap
+		[99947] = Defaults(),	-- Face Rage
+		[100415] = Defaults(),	-- Rage
 		-- Baleroc
 		[99403] = Defaults(),	-- Tormented
+		[99257] = Defaults(),	-- Tormented NM
 		[99256] = Defaults(),	-- Torment
+		[99257] = Defaults(),	-- Tormented NM
+		[100231] = Defaults(),	-- Torment HC
 		[99252] = Defaults(),	-- Blaze of Glory
 		[99516] = Defaults(),	-- Countdown
-		-- Majordomo Staghelm
+		-- Majordomo Staghelm	ID: 875264
 		[98450] = Defaults(),	-- Searing Seeds
+		[98584] = Defaults(),	-- Burning Orb NM
+		[100209] = Defaults(),	-- Burning Orb 25 NM
+		[100210] = Defaults(),	-- Burning Orb HC
 		[98565] = Defaults(),	-- Burning Orb
 		-- Ragnaros
 		[98313] = Defaults(),	-- Magma Blast
+		[101247] = Defaults(),	-- Magma Blast HC
 		[99145] = Defaults(),	-- Blazing Heat
+		[100303] = Defaults(),	-- Blazing Heat 25 NM
+		[100982] = Defaults(),	-- Blazing Heat 1 HC
+		[100985] = Defaults(),	-- Blazing Heat 2 HC
 		[99399] = Defaults(),	-- Burning Wound
+		[101238] = Defaults (),	-- Burning Wound 25 NM
+		[101239] = Defaults(),	-- Burning Wound HC
 		[99613] = Defaults(),	-- Molten Blast
+		[100292] = Defaults(),	-- Lava Wave 25 NM
 		[100293] = Defaults(),	-- Lava Wave
 		[100675] = Defaults(),	-- Dreadflame
 		[100249] = Defaults(),	-- Combustion
+		[100238] = Defaults(),	-- Magma Trap Vulnerability
+		[99849] = Defaults(),	-- Fixate (Meteor)
 		-- Trash
 		[99532] = Defaults(),	-- Melt Armor
+		[100767] = Defaults(),	-- Melt Armor HC
+		[100526] = Defaults(),	-- Blistering Wound
+		[99993] = Defaults(),	-- Fiery Blood
 	-- Dragon Soul
 	    -- Morchok
 		[103541] = Defaults(),	-- Safe
@@ -478,39 +552,77 @@ G.unitframe.aurafilters.RaidDebuffs = {
 		[103534] = Defaults(),	-- Danger
 		[103687] = Defaults(),	-- Crush Armor
 		[108570] = Defaults(),	-- Black Blood of the Earth
+		[103785] = Defaults(),	-- Black Blood of the Earth NM
+		[103851] = Defaults(),	-- Black Blood of the Earth NM
+		[110288] = Defaults(),	-- Black Blood of the Earth HC
+		[109033] = Defaults(),	-- Stomp
 		-- Warlord Zon'ozz
 		[103434] = Defaults(),	-- Disrupting Shadows
+		[104599] = Defaults(),	-- Disrupting Shadows NM
+		[104600] = Defaults(),	-- Disrupting Shadows HC
 		-- Yor'sahj the Unsleeping
 		[105171] = Defaults(),	-- Deep Corruption
+		[103628] = Defaults(),	-- Deep Corruption Stacks
 		-- Hagara the Stormbinder
 		[105465] = Defaults(),	-- Lighting Storm
+		[108568] = Defaults(),	-- Lighting Storm NM
+		[110893] = Defaults(),	-- Lighting Storm HC
 		[104451] = Defaults(),	-- Ice Tomb
 		[109325] = Defaults(),	-- Frostflake
+		[108567] = Defaults(),	-- Shattered Ice NM
+		[110888] = Defaults(),	-- Shattered Ice HC
 		[105289] = Defaults(),	-- Shattered Ice
 		[105285] = Defaults(),	-- Target
+		[110317] = Defaults(),	-- Watery Entrenchment
 		[105259] = Defaults(),	-- Watery Entrenchment
 		[107061] = Defaults(),	-- Ice Lance
+		[107062] = Defaults(),	-- Ice Lance HC
 		-- Ultraxion
 		[109075] = Defaults(),	-- Fading Light
+		[110070] = Defaults(),	-- Fading Light NM
+		[110080] = Defaults(),	-- Fading Light NM
+		[110069] = Defaults(),	-- Fading Light HC
+		[110079] = Defaults(),	-- Fading Light HC
 		-- Warmaster Blackhorn
 		[108043] = Defaults(),	-- Sunder Armor
 		[107558] = Defaults(),	-- Degeneration
 		[107567] = Defaults(),	-- Brutal Strike
+		[108861] = Defaults(),	-- Degeneration NM
+		[109207] = Defaults(),	-- Degeneration HC
+		[109209] = Defaults(),	-- Brutal Strike NM
+		[109210] = Defaults(),	-- Brutal Strike HC
 		[108046] = Defaults(),	-- Shockwave
-		[110214] = Defaults(),	-- Shockwave
 		-- Spine of Deathwing
 		[105479] = Defaults(),	-- Searing Plasma
 		[105490] = Defaults(),	-- Fiery Grip
 		[105563] = Defaults(),	-- Grasping Tendrils
+		[109362] = Defaults(),	-- Searing Plasma
+		[109363] = Defaults(),	-- Searing Plasma HC
+		[105457] = Defaults(),	-- Fiery Grip
+		[109458] = Defaults(),	-- Fiery Grip HC
+		[105454] = Defaults(),	-- Grasping Tendrils
+		[109455] = Defaults(),	-- Grasping Tendrils HC
+		[106200] = Defaults(),	-- Blood Corruption Earth
 		[106199] = Defaults(),	-- Blood Corruption: Death
 		-- Madness of Deathwing
-		[105841] = Defaults(),	-- Degenerative Bite
+		[109625] = Defaults(),	-- Degenerative Bite NM
+		[109626] = Defaults(),	-- Degenerative Bite HC
 		[106385] = Defaults(),	-- Crush
+		[109603] = Defaults(),	-- Tetanus NM
+		[109604] = Defaults(),	-- Tetanus HC
+		[106400] = Defaults(),	-- Impale Target
+		[109632] = Defaults(),	-- Impale Debuff
+		[110141] = Defaults(),	-- Shrapnel (Target) NM
+		[110140] = Defaults(),	-- Shrapnel (Target) HC
+		[109585] = Defaults(),	-- Blistering Heat NM
+		[109586] = Defaults(),	-- Blistering Heat HC
+		[108649] = Defaults(),	-- Corrupting Parasite 1
+		[108601] = Defaults(),	-- Corrupting Parasite 2
+		[105841] = Defaults(),	-- Degenerative Bite
 		[106730] = Defaults(),	-- Tetanus
 		[106444] = Defaults(),	-- Impale
 		[106794] = Defaults(),	-- Shrapnel (Target)
 		[105445] = Defaults(),	-- Blistering Heat
-		[108649] = Defaults(),	-- Corrupting Parasite
 	}
 }
 
