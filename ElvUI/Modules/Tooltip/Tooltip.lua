@@ -249,7 +249,7 @@ function TT:SetUnitText(tt, unit)
 				GameTooltip:AddDoubleLine(format("%s:", ROLE), role, nil, nil, nil, r, g, b)
 			end
 		end
-
+		
 		if TT.db.showElvUIUsers then
 			local addonUser = E.UserList[nameRealm]
 			if addonUser then
@@ -556,8 +556,9 @@ function TT:GameTooltip_OnTooltipSetItem(tt)
 		local _, link = tt:GetItem()
 		local num = GetItemCount(link)
 		local numall = GetItemCount(link, true)
+		local _, _, _, _, _, _, _, stack, _, _, sellPrice = GetItemInfo(link)
 		local left, right, bankCount = " ", " ", " "
-
+		
 		if link and TT:IsModKeyDown() then
 			left = format("|cFFCA3C3C%s|r %s", ID, match(link, ":(%w+)"))
 		end
@@ -580,7 +581,17 @@ function TT:GameTooltip_OnTooltipSetItem(tt)
 			tt:AddDoubleLine(" ", bankCount)
 		end
 
+		if TT.db.MaxStack and stack > 1 then
+			if TT.db.MaxStackValue then
+				local totalvalue = sellPrice * stack
+				tt:AddLine("Max Stack Size: "..stack.."  |CFFF7FCFC"..GetCoinTextureString(totalvalue).."|r")
+				else
+				tt:AddLine("Max Stack Size: "..stack)
+			end
+		end
+
 		tt.itemCleared = true
+		
 	end
 end
 
