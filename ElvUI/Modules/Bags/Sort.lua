@@ -748,10 +748,6 @@ function B:StopStacking(message, noUpdate)
 	if message then
 		E:Print(message)
 	end
-	
-		if (E.db.bags.deleteGrays.enable or E.db.bags.deleteGrays.junkList) then
-			GrayDelete_Timer=myAceTimer:ScheduleTimer(DeleteGrays, 0.6)
-		end
 end
 
 
@@ -874,7 +870,7 @@ function B:DoMoves()
 	if lock_stop then
 		for slot,itemid in pairs(moveTracker) do
 			if B:ConvertLinkToID(B:GetItemLink(B:Decode_BagSlot(slot))) ~= itemid then
-				WAIT_TIME = 0.1
+				WAIT_TIME = 0.2
 				return --give processing time to happen
 			end
 			moveTracker[slot] = nil

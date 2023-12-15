@@ -67,7 +67,6 @@ local MAX_WATCHED_TOKENS = MAX_WATCHED_TOKENS
 local NUM_BAG_FRAMES = NUM_BAG_FRAMES
 local NUM_CONTAINER_FRAMES = NUM_CONTAINER_FRAMES
 local SEARCH = SEARCH
-
 local SEARCH_STRING = ""
 
 Skulyitemcache = {
@@ -1040,6 +1039,88 @@ Skulyitemcache = {
 	[69892] = "Ripped Sandstorm Cloak",
 	[71033] = "Lil' Tarecgosa",
 	[71721] = "Pattern: Drakehide Leg Armor",
+	[43501] = "Northern Egg",
+	[12808] = "Essence of Undeath",
+	[2836] = "Coarse Stone",
+	[2838] = "Heavy Stone",
+	[10286] = "Heart of the Wild",
+	[7972] = "Ichor of Undeath",
+	[3358] = "Khadgar's Whisker",
+	[22644] = "Crunchy Spider Leg",
+	[814] = "Flask of Oil",
+	[24477] = "Jaggal Clam Meat",
+	[44834] = "Wild Turkey",
+	[5465] = "Small Spider Leg",
+	[785] = "Mageroyal",
+	[5469] = "Strider Meat",
+	[5471] = "Stag Meat",
+	[25844] = "Adamantite Rod",
+	[12203] = "Red Wolf Meat",
+	[12205] = "White Spider Meat",
+	[12207] = "Giant Egg",
+	[22573] = "Mote of Earth",
+	[5503] = "Clam Meat",
+	[5504] = "Tangy Clam Meat",
+	[2251] = "Gooey Spider Leg",
+	[14048] = "Bolt of Runecloth",
+	[3404] = "Buzzard Wing",
+	[1015] = "Lean Wolf Flank",
+	[2770] = "Copper Ore",
+	[2771] = "Tin Ore",
+	[2772] = "Iron Ore",
+	[3667] = "Tender Crocolisk Meat",
+	[2775] = "Silver Ore",
+	[6303] = "Raw Slitherskin Mackerel",
+	[10285] = "Shadow Silk",
+	[6308] = "Raw Bristle Whisker Catfish",
+	[2840] = "Copper Bar",
+	[7076] = "Essence of Earth",
+	[27674] = "Ravager Flesh",
+	[27682] = "Talbuk Venison",
+	[44835] = "Autumnal Herbs",
+	[44853] = "Honey",
+	[12365] = "Dense Stone",
+	[21877] = "Netherweave Cloth",
+	[3685] = "Raptor Egg",
+	[23427] = "Eternium Ore",
+	[35562] = "Bear Flank",
+	[6338] = "Silver Rod",
+	[2924] = "Crocolisk Meat",
+	[11128] = "Golden Rod",
+	[4306] = "Silk Cloth",
+	[2672] = "Stringy Wolf Meat",
+	[2674] = "Crawler Meat",
+	[11144] = "Truesilver Rod",
+	[2675] = "Crawler Claw",
+	[4402] = "Small Flame Sac",
+	[2677] = "Boar Ribs",
+	[769] = "Chunk of Boar Meat",
+	[22456] = "Primal Shadow",
+	[12184] = "Raptor Flesh",
+	[8150] = "Deeprock Salt",
+	[23571] = "Primal Might",
+	[16206] = "Arcanite Rod",
+	[16000] = "Thorium Tube",
+	[12206] = "Tender Crab Meat",
+	[12208] = "Tender Wolf Meat",
+	[27671] = "Buzzard Meat",
+	[4337] = "Thick Spider's Silk",
+	[6889] = "Small Egg",
+	[7911] = "Truesilver Ore",
+	[7912] = "Solid Stone",
+	[7974] = "Zesty Clam Meat",
+	[6471] = "Perfect Deviate Scale",
+	[5466] = "Scorpid Stinger",
+	[3712] = "Turtle Meat",
+	[14047] = "Runecloth",
+	[12037] = "Mystery Meat",
+	[7068] = "Elemental Fire",
+	[4338] = "Mageweave Cloth",
+	[4359] = "Handful of Copper Bolts",
+	[8154] = "Scorpid Scale",
+	[5637] = "Large Fang",
+	[3470] = "Rough Grinding Stone",
+	[2835] = "Rough Stone",
 }
 
 local sellvalueNum = 1
@@ -2399,6 +2480,13 @@ function B:ToggleBags(id)
 	else
 		B:OpenBags()
 	end
+	
+	-- for i=1, 71721 do
+		-- local Name, Link, Rarity, Level, MinLevel, Type, SubType, StackCount = GetItemInfo(i)
+		-- if Type == "Trade Goods" then
+				-- Skulyitemtemp[i] = Name
+		-- end
+	-- end
 end
 
 function B:ToggleBackpack()
@@ -2628,7 +2716,7 @@ end
 function B:CHAT_MSG_LOOT(event, arg)
 if InCombatLockdown() and B.db.autosort then return E:Print(L["Notice: Auto sort disabled while in Combat."]) end
 
-if B.db.autosort then
+if B.db.autosort or E.db.bags.deleteGrays.enable or E.db.bags.deleteGrays.junkList then
 local lootrecievedmsg = strmatch(arg, "You receive loot:")
 if lootrecievedmsg == nil then return end
 
@@ -2684,16 +2772,8 @@ local scanTooltip
 				elseif iSubType == "Questitem" or iSubType == "Gem" or iSubType == "Key" or iSubType == "Container" or iSubType == "Enchanting" then 
 						return
 				else
-						SkulySort_Timer=myAceTimer:ScheduleTimer(SkulySort, 0.2)
+						GrayDelete_Timer=myAceTimer:ScheduleTimer(DeleteGrays, 0.1)
 				end
-		end
-	end
-end
-
-function B:LOOT_CLOSED()
-	if not B.db.autosort then
-		if (E.db.bags.deleteGrays.enable or E.db.bags.deleteGrays.junkList) then
-			GrayDelete_Timer=myAceTimer:ScheduleTimer(DeleteGrays, 0.6)
 		end
 	end
 end
@@ -2936,7 +3016,6 @@ B:DeleteGrays()
 end
 
 function B:DeleteGrays(delete)
-if B.SortUpdateTimer:IsShown() then return end
 
 deleteList = E.db.bags.deleteItems
 local totalsum = B:deleteListCount()
@@ -2986,6 +3065,11 @@ local totalsum = B:deleteListCount()
 			end
 		end
 	end
+	
+	if B.db.autosort then
+		SkulySort_Timer=myAceTimer:ScheduleTimer(SkulySort, 0.5)
+	end
+	
 end
 
 function B:UpdateDeleteGraySettings()
@@ -3062,10 +3146,8 @@ function B:Initialize()
 	B:CreateSellFrame()
 	B:CreateSellFrameGreens()
 	B:RegisterEvent("MERCHANT_CLOSED")
-	
-	--Delete Greys
-	B:RegisterEvent("LOOT_CLOSED")
-	--Auto Sort
+
+	--Auto Sort and Delete Greys
 	B:RegisterEvent("CHAT_MSG_LOOT")
 	
 	--Bag Mover (We want it created even if Bags module is disabled, so we can use it for default bags too)
