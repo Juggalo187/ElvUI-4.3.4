@@ -345,7 +345,8 @@ L["Your items have been repaired for: "] = "자동으로 수리하고 비용을 
 L["Your items have been repaired using guild bank funds for: "] = "길드자금으로 수리하고 비용을 지불했습니다:"
 L["Your profile was successfully recieved by the player."] = "상대에게 데이터를 성공적으로 전송했습니다."
 L["|cFFE30000Lua error recieved. You can view the error message when you exit combat."] = "Lua 에러가 발생하였습니다. 전투가 끝난 후에 내역을 표시하겠습니다."
-
+--skuly
+L["Notice: Auto sort disabled while in Combat."] = "참고: 전투 중에는 자동 정렬이 비활성화됩니다."
 ----------------------------------
 L["DESC_MOVERCONFIG"] = [=[프레임을 드래그로 원하는 위치로 이동시키세요.|n[잠금] 버튼을 누르면 이동모드가 종료됩니다.
 

@@ -160,8 +160,12 @@ end
 
 function NP:Configure_Health(frame, configuring)
 	local db = NP.db.units[frame.UnitType].health
+	
+	local horizontal = NP.db.positioning.horizontal
+	local dbvertical = NP.db.positioning.vertical
 
-	frame.Health:SetPoint("TOP", frame, "TOP", 0, 0)
+	--frame.Health:SetPoint("TOP", frame, "TOP", 0, 0)
+	frame.Health:SetPoint("TOP", frame, "TOP", horizontal, dbvertical)
 
 	if configuring then
 		frame.Health:SetStatusBarTexture(LSM:Fetch("statusbar", NP.db.statusbar), "BORDER")
@@ -169,6 +173,7 @@ function NP:Configure_Health(frame, configuring)
 		NP:Configure_HealthBarScale(frame, frame.currentScale or 1, configuring)
 
 		E:SetSmoothing(frame.Health, NP.db.smoothbars)
+		--frame:SetPoint("TOPLEFT", horizontal, dbvertical)
 
 		if db.text.enable then
 			frame.Health.Text:ClearAllPoints()

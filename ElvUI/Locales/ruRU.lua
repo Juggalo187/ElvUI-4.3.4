@@ -345,7 +345,8 @@ L["Your items have been repaired for: "] = "Ремонт обошелся в "
 L["Your items have been repaired using guild bank funds for: "] = "Ремонт обошелся гильдии в "
 L["Your profile was successfully recieved by the player."] = "Ваш профиль успешно получен целью. Ура, товарищи!"
 L["|cFFE30000Lua error recieved. You can view the error message when you exit combat."] = "|cFFE30000Обнаружена ошибка lua. Вы получите отчет о ней после завершения боя."
-
+--skuly
+L["Notice: Auto sort disabled while in Combat."] = "Примечание: во время боя автосортировка отключена."
 ----------------------------------
 L["DESC_MOVERCONFIG"] = [=[Блокировка отключена. Передвиньте фреймы и нажмите "Закрепить", когда закончите.
 

@@ -345,6 +345,8 @@ L["Your items have been repaired for: "] = true
 L["Your items have been repaired using guild bank funds for: "] = true
 L["Your profile was successfully recieved by the player."] = true
 L["|cFFE30000Lua error recieved. You can view the error message when you exit combat."] = true
+--skuly
+L["Notice: Auto sort disabled while in Combat."] = true
 
 ----------------------------------
 L["DESC_MOVERCONFIG"] = [=[Movers unlocked. Move them now and click Lock when you are done.

@@ -345,7 +345,8 @@ L["Your items have been repaired for: "] = "Tus objetos han sido reparados por:"
 L["Your items have been repaired using guild bank funds for: "] = "Tus objetos han sido reparados con fondos del banco de hermandad por:"
 L["Your profile was successfully recieved by the player."] = "Tu perfil ha sido recibido exitosamente por el jugador."
 L["|cFFE30000Lua error recieved. You can view the error message when you exit combat."] = "|cFFE30000Error de Lua recibido. Podrás ver el error cuando salgas de combate."
-
+--skuly
+L["Notice: Auto sort disabled while in Combat."] = "Aviso: la clasificación automática está desactivada mientras estás en combate."
 ----------------------------------
 L["DESC_MOVERCONFIG"] = [=[Fijadores desbloqueados. Muévelos ahora y haz clic en Bloquear cuando termines.
 Opciones:

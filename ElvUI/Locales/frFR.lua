@@ -345,7 +345,8 @@ L["Your items have been repaired for: "] = "Votre équipement a été réparé p
 L["Your items have been repaired using guild bank funds for: "] = "Votre équipement a été réparé avec l'argent de la banque de guilde pour: "
 L["Your profile was successfully recieved by the player."] = "Votre profil a été reçu avec succès par le joueur."
 L["|cFFE30000Lua error recieved. You can view the error message when you exit combat."] = "|cFFE30000Erreur Lua reçue. Vous pouvez voir ce message d'erreur quand vous sortirez de combat."
-
+--skuly
+L["Notice: Auto sort disabled while in Combat."] = "Remarque : le tri automatique est désactivé pendant le combat."
 ----------------------------------
 L["DESC_MOVERCONFIG"] = [=[Cadres déverrouillés. Déplacez-les et cliquez sur Verrouiller une fois terminé.
 

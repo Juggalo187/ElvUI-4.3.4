@@ -2338,7 +2338,7 @@ local function GetUnitSettings(unit, name)
 						min = 50, max = 200, step = 1
 					},
 					textGroup = {
-						order = 4,
+						order = 7,
 						type = "group",
 						name = L["Text"],
 						guiInline = true,
@@ -3761,7 +3761,7 @@ local function GetUnitSettings(unit, name)
 			}
 		end
 		group.args.healthGroup.args.useClassColor = {
-			order = 3.1,
+			order = 6.1,
 			type = "toggle",
 			name = L["Use Class Color"]
 		}
@@ -4549,6 +4549,39 @@ E.Options.args.nameplate = {
 									min = 10, max = 75, step = 1
 								}
 							}
+						}
+					}
+				},
+				positioningGroup = {
+					order = 19,
+					type = "group",
+					name = L["Position"],
+					get = function(info)
+						return E.db.nameplates.positioning[info[#info]]
+					end,
+					set = function(info, value)
+						E.db.nameplates.positioning[info[#info]] = value
+						NP:ConfigureAll()
+					end,
+					args = {
+						Warning = {
+						order = 1,
+						type = "description",
+						name = L["Changing these settings will alter the placement of the nameplates, however the mouseover area does not follow. |cffff0000Use with caution!|r"]
+						},
+						vertical = {
+						order = 2,
+						type = "range",
+						name = L["Vertical Offset"],
+						desc = L["Sets the vertical offset of the health bar."],
+						min = -128, max = 128, step = 1
+						},
+						horizontal = {
+						order = 3,
+						type = 'range',
+						name = L["Horizontal Offset"],
+						desc = L["Sets the left/right offset of the health bar."],
+						min = -128, max = 128, step = 1
 						}
 					}
 				}

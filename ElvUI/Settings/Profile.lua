@@ -382,6 +382,10 @@ P.nameplates = {
 		friendly = false,
 		enemy = false
 	},
+	positioning = {
+		vertical = 0,
+		horizontal = 0
+	},
 	plateSize ={
 		friendlyWidth = 150,
 		friendlyHeight = 30,

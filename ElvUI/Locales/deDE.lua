@@ -345,6 +345,8 @@ L["Your items have been repaired for: "] = "Deine Gegenstände wurden repariert 
 L["Your items have been repaired using guild bank funds for: "] = "Deine Gegenstände wurden repariert. Die Gildenbank kostete das: "
 L["Your profile was successfully recieved by the player."] = "Dein Profil wurde erfolgreich von dem Spieler empfangen."
 L["|cFFE30000Lua error recieved. You can view the error message when you exit combat."] = "|cFFE30000Lua Fehler erhalten. Du kannst die Fehlermeldung ansehen, wenn du den Kampf verlässt."
+--skuly
+L["Notice: Auto sort disabled while in Combat."] = "Hinweis: Die automatische Sortierung ist im Kampf deaktiviert."
 
 ----------------------------------
 L["DESC_MOVERCONFIG"] = [=[Ankerpunkte entriegelt. Bewege die Ankerpunkte und klicke 'sperren', wenn du fertig bist.

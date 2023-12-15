@@ -2626,7 +2626,7 @@ function B:PostBagMove()
 end
 
 function B:CHAT_MSG_LOOT(event, arg)
-if InCombatLockdown() and B.db.autosort then return E:Print("Notice: Auto sort disabled while in Combat.") end
+if InCombatLockdown() and B.db.autosort then return E:Print(L["Notice: Auto sort disabled while in Combat."]) end
 
 if B.db.autosort then
 local lootrecievedmsg = strmatch(arg, "You receive loot:")

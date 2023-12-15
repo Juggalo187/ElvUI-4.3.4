@@ -16,6 +16,12 @@ local SelectQuestLogEntry = SelectQuestLogEntry
 local UnitXP = UnitXP
 local UnitXPMax = UnitXPMax
 
+
+function DB:CHAT_MSG_SYSTEM(event, text)
+-- waiting for Double XP on Athena to find the login message
+--DEFAULT_CHAT_FRAME:AddMessage(" text = "..text)
+end
+
 local function getQuestXP(completedOnly, zoneOnly)
 	local lastQuestLogID = GetQuestLogSelection()
 	local zoneText = GetZoneText()
@@ -313,6 +319,14 @@ function DB:ExperienceBar_Load()
 	DB.expBar.questBar:SetInside()
 	DB.expBar.questBar:Hide()
 	E:RegisterStatusBar(DB.expBar.questBar)
+	
+	DB.expBar.SysmsgeventFrame = CreateFrame("Frame")
+	DB.expBar.SysmsgeventFrame:Hide()
+	DB.expBar.SysmsgeventFrame:SetScript("OnEvent", function(self, event, text)
+	if event == "CHAT_MSG_SYSTEM" then
+		DB:CHAT_MSG_SYSTEM(event, text)
+	end
+	end)
 
 	DB.expBar.eventFrame = CreateFrame("Frame")
 	DB.expBar.eventFrame:Hide()
@@ -374,4 +388,5 @@ function DB:ExperienceBar_Load()
 
 	E:CreateMover(DB.expBar, "ExperienceBarMover", L["Experience Bar"], nil, nil, nil, nil, nil, "databars,experience")
 	DB:ExperienceBar_Toggle()
+	DB.expBar.SysmsgeventFrame:RegisterEvent("CHAT_MSG_SYSTEM")
 end

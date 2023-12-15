@@ -345,7 +345,8 @@ L["Your items have been repaired for: "] = "装备已修复: "
 L["Your items have been repaired using guild bank funds for: "] = "物品已使用公会银行资金修复: "
 L["Your profile was successfully recieved by the player."] = "你的配置文件已被其他玩家成功接收."
 L["|cFFE30000Lua error recieved. You can view the error message when you exit combat."] = "|cFFE30000LUA错误已接收, 你可以在脱离战斗后检查.|r"
-
+--skuly
+L["Notice: Auto sort disabled while in Combat."] = "注意：战斗中自动排序被禁用。"
 ----------------------------------
 L["DESC_MOVERCONFIG"] = [=[解除框架移动锁定. 现在可以移动它们, 移好后请点击「锁定」.
 

@@ -345,7 +345,8 @@ L["Your items have been repaired for: "] = "裝備已修理, 共支出："
 L["Your items have been repaired using guild bank funds for: "] = "已使用公會資金修理裝備, 共支出: "
 L["Your profile was successfully recieved by the player."] = "你的設定檔已被其他玩家成功接收."
 L["|cFFE30000Lua error recieved. You can view the error message when you exit combat."] = "|cFFE30000接收到了Lua錯誤, 你可以在脫離戰鬥後檢查.|r"
-
+--skuly
+L["Notice: Auto sort disabled while in Combat."] = "注意：自動排序在戰鬥中被停用。"
 ----------------------------------
 L["DESC_MOVERCONFIG"] = [=[解除框架移動鎖定. 現在可以移動它們, 移好後請點擊「鎖定」.
 
