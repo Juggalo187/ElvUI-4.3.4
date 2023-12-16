@@ -207,7 +207,6 @@ P.databars = {
 --Bags
 P.bags = {
 	sortInverted = true,
-	sortnotice = true,
 	bagSize = 34,
 	bagWidth = 406,
 	bagButtonSpacing = 1,

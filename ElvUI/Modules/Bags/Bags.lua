@@ -1128,7 +1128,6 @@ local deletevalueNum = 1
 local totalsum = 0
 local includesoulbound = false
 local SkulySort_Timer = nil
-GrayDelete_Timer = nil
 myAceTimer = LibStub("AceTimer-3.0"):Embed(B)
 
 function B:GetContainerItemInfo(containerIndex, slotIndex)
@@ -1173,7 +1172,8 @@ function B:Tooltip_Show()
 	end
 
 	if self.ttValue and self.ttValue() > 0 then
-		GameTooltip:AddLine(E:FormatMoney(self.ttValue(), E.db.bags.moneyFormat, not E.db.bags.moneyCoins), 1, 1, 1)
+		local slotcount = B:GetGraysSlots()
+		GameTooltip:AddLine(E:FormatMoney(self.ttValue(), E.db.bags.moneyFormat, not E.db.bags.moneyCoins).." ["..slotcount.." slots]", 1, 1, 1)
 	end
 
 	GameTooltip:Show()
@@ -2006,6 +2006,27 @@ function B:GetGraysValue()
 	return value
 end
 
+function B:GetGraysSlots()
+	local slots = 0
+
+	for bag = 0, 4 do
+		for slot = 1, GetContainerNumSlots(bag) do
+			local itemID = GetContainerItemID(bag, slot)
+			if itemID then
+				local _, _, rarity, _, _, iType, _, _, _, _, itemPrice = GetItemInfo(itemID)
+				if itemPrice and itemPrice > 0 then
+					if (rarity and rarity == 0) and (iType and iType ~= "Quest") then
+						slots = slots + 1
+					end
+				end
+			end
+		end
+	end
+
+	return slots
+end
+
+
 function B:VendorGrays(delete)
 	if B.SellFrame:IsShown() then return end
 
@@ -2472,6 +2493,11 @@ function B:ConstructContainerFrame(name, isBank)
 	return f
 end
 
+function SkulySort()
+if B.SortUpdateTimer:IsShown() then return end
+B.BagFrame.sortButton:Click()
+end
+
 function B:ToggleBags(id)
 	if id and (GetContainerNumSlots(id) == 0) then return end
 
@@ -2480,13 +2506,6 @@ function B:ToggleBags(id)
 	else
 		B:OpenBags()
 	end
-	
-	-- for i=1, 71721 do
-		-- local Name, Link, Rarity, Level, MinLevel, Type, SubType, StackCount = GetItemInfo(i)
-		-- if Type == "Trade Goods" then
-				-- Skulyitemtemp[i] = Name
-		-- end
-	-- end
 end
 
 function B:ToggleBackpack()
@@ -2498,6 +2517,9 @@ function B:ToggleBackpack()
 	else
 		B:CloseBags()
 		PlaySound("igBackPackClose")
+		if B.db.autosort then
+			SkulySort_Timer=myAceTimer:ScheduleTimer(SkulySort, 0.1)
+		end
 	end
 end
 
@@ -2713,69 +2735,45 @@ function B:PostBagMove()
 	end
 end
 
-function B:CHAT_MSG_LOOT(event, arg)
-if InCombatLockdown() and B.db.autosort then return E:Print(L["Notice: Auto sort disabled while in Combat."]) end
+function B:LOOT_CLOSED(event)
 
-if B.db.autosort or E.db.bags.deleteGrays.enable or E.db.bags.deleteGrays.junkList then
-local lootrecievedmsg = strmatch(arg, "You receive loot:")
-if lootrecievedmsg == nil then return end
+deleteList = E.db.bags.deleteItems
+local totalsum = B:deleteListCount()
 
-if B.SortUpdateTimer:IsShown() then return end
-
-local sName, sLink, iRarity, iLevel, iMinLevel, sType, sSubType, iStackCount = GetItemInfo(arg)
-local iName = sName
-local iType = sType
-local iSubType = sSubType
-local StackCount = iStackCount
-
-if iType == nil then
-iType = "|CFFD9655DNii"
-end
-
-if iSubType == nil then
-iSubType = "|CFFD9655DNii"
-end
-
-if StackCount == nil then
-StackCount = "|CFFD9655DNii"
-end
-
-if iName == nil then
-iName = "|CFFD9655DNii"
-end
-local scanTooltip
-
-	local itemID = B:ConvertLinkToID(sLink)
-	if itemID then	
 	
-		if not scanTooltip then
-		scanTooltip = CreateFrame("GameTooltip", "soulboundScanTooltip", UIParent, "GameTooltipTemplate")
-		scanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
-		end
-		
-		scanTooltip:ClearLines()
-		scanTooltip:SetHyperlink("item:"..itemID)
-		
-		
-			if iType == "Weapon" or iType == "Armor" then 
-					for id=1, scanTooltip:NumLines() do
-						local text = _G["soulboundScanTooltipTextLeft" .. id]
-			
-						if text then
-							if id == 2 then
-								if (text:GetText() == ITEM_SOULBOUND) or (text:GetText() == ITEM_BIND_ON_PICKUP) then 
-									return 
+		for bag = 0, 5, 1 do
+			for slot = 1, GetContainerNumSlots(bag), 1 do
+				local itemID = GetContainerItemID(bag, slot)
+				if itemID then
+						local name, link, rarity, _, _, iType, _, itemStackCount, _, _, itemPrice = GetItemInfo(itemID)
+						local stackCount = select(2, GetContainerItemInfo(bag, slot)) or 1
+						local totalwithfullstack = itemPrice * stackCount
+						deletevalueNum = E.db.bags.deleteGrays.deletevalue
+						if E.db.bags.deleteGrays.enable then
+							if (rarity and rarity == 0) and (iType and iType ~= "Quest") and (itemPrice < (deletevalueNum * 100)) then
+								PickupContainerItem(bag, slot)
+								DeleteCursorItem()
+								if E.db.bags.deleteGrays.details then
+								DEFAULT_CHAT_FRAME:AddMessage("|cFF00DDDD Deleted |r"..stackCount.."x "..link.." "..GetCoinTextureString(totalwithfullstack))
+								end
+							end	
+						end
+						if E.db.bags.deleteGrays.junkList then
+							if totalsum > 0 then
+								for k,v in pairs(deleteList) do
+									if  itemID == k then
+										PickupContainerItem(bag, slot)
+										DeleteCursorItem()
+										if E.db.bags.deleteGrays.details then
+											DEFAULT_CHAT_FRAME:AddMessage("|cFF00DDDD Deleted |r"..stackCount.."x "..link.." "..GetCoinTextureString(totalwithfullstack))
+										end
 								end
 							end
 						end
 					end
-				elseif iSubType == "Questitem" or iSubType == "Gem" or iSubType == "Key" or iSubType == "Container" or iSubType == "Enchanting" then 
-						return
-				else
-						GrayDelete_Timer=myAceTimer:ScheduleTimer(DeleteGrays, 0.1)
 				end
+			end
 		end
-	end
 end
 
 function B:MERCHANT_CLOSED()
@@ -3005,73 +3003,6 @@ function B:Skulychatoutput()
 	StaticPopup_Show ("SKULYOUTPUT", sendtopopup)
 end
 
-function SkulySort()
-if InCombatLockdown() then return end
-if B.SortUpdateTimer:IsShown() then return end
-B.BagFrame.sortButton:Click()
-end
-
-function DeleteGrays()
-B:DeleteGrays()
-end
-
-function B:DeleteGrays(delete)
-
-deleteList = E.db.bags.deleteItems
-local totalsum = B:deleteListCount()
-
-	if E.db.bags.deleteGrays.enable then
-		for bag = 0, 5, 1 do
-			for slot = 1, GetContainerNumSlots(bag), 1 do
-				local itemID = GetContainerItemID(bag, slot)
-				if itemID then
-					local _, name, rarity, _, _, iType, _, itemStackCount, _, _, itemPrice = GetItemInfo(itemID)
-					local stackCount = select(2, GetContainerItemInfo(bag, slot)) or 1
-					local totalwithfullstack = itemPrice * stackCount
-					deletevalueNum = E.db.bags.deleteGrays.deletevalue
-						if (rarity and rarity == 0) and (iType and iType ~= "Quest") and (itemPrice < (deletevalueNum * 100)) then
-							PickupContainerItem(bag, slot)
-							DeleteCursorItem()
-							if E.db.bags.deleteGrays.details then
-							DEFAULT_CHAT_FRAME:AddMessage("|cFF00DDDD Deleted |r"..stackCount.."x "..name.." "..GetCoinTextureString(totalwithfullstack))
-							end
-						end	
-				end
-			end
-		end
-	end
-	
-	if E.db.bags.deleteGrays.junkList then
-		if totalsum > 0 then
-			for k,v in pairs(deleteList) do
-				for bag = 0, 5, 1 do
-					for slot = 1, GetContainerNumSlots(bag), 1 do
-						local itemID = GetContainerItemID(bag, slot)
-						if itemID then
-								if  itemID == k then
-									local stackCount = select(2, GetContainerItemInfo(bag, slot)) or 1
-									local itemPrice = select(11, GetItemInfo(itemID))
-									local iname, link = GetItemInfo(itemID)
-									PickupContainerItem(bag, slot)
-									DeleteCursorItem()
-									if E.db.bags.deleteGrays.details then
-									local itemtotalvalue = stackCount * itemPrice
-										DEFAULT_CHAT_FRAME:AddMessage("|cFF00DDDD Deleted |r"..stackCount.."x "..link.." "..GetCoinTextureString(itemtotalvalue))
-									end
-								end
-						end
-					end
-				end
-			end
-		end
-	end
-	
-	if B.db.autosort then
-		SkulySort_Timer=myAceTimer:ScheduleTimer(SkulySort, 0.5)
-	end
-	
-end
-
 function B:UpdateDeleteGraySettings()
 	deletevalueNum = E.db.bags.deleteGrays.deletevalue
 end
@@ -3147,8 +3078,8 @@ function B:Initialize()
 	B:CreateSellFrameGreens()
 	B:RegisterEvent("MERCHANT_CLOSED")
 
-	--Auto Sort and Delete Greys
-	B:RegisterEvent("CHAT_MSG_LOOT")
+	--Delete Greys
+	B:RegisterEvent("LOOT_CLOSED")
 	
 	--Bag Mover (We want it created even if Bags module is disabled, so we can use it for default bags too)
 	local BagFrameHolder = CreateFrame("Frame", nil, E.UIParent)

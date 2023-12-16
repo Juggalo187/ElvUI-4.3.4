@@ -897,18 +897,13 @@ E.Options.args.bags = {
 											B:UpdateListAdd(itemID)
 							end
 						},
-						spacer = {
-							order = 2,
-							type = "description",
-							name = " ",
-							width = "normal"
-						},
 					}
 				},
 				adddeleteEntriesProfile = {
 					order = 8,
 					type = "multiselect",
 					name = L["Items to Delete"],
+					width = "normal",
 					values = function() return E.db.bags.deleteItems end,
 					get = function(info, value)	return E.db.bags.deleteItems[value] end,
 					set = function(info, value)
@@ -966,37 +961,31 @@ E.Options.args.bags = {
 					order = 1,
 					type = "toggle",
 					name = L["Auto Sort"],
-					desc = L["Automatically sort after looting corpses."]
-				},
-				sortnotice = {
-					order = 3,
-					type = "toggle",
-					name = L["In-combat notice"],
-					desc = L["This will print message in chat that you are in combat if you try to loot while in combat."]
+					desc = L["Automatically sort when closing bags."]
 				},
 				sortInverted = {
-					order = 4,
+					order = 2,
 					type = "toggle",
 					name = L["Sort Inverted"],
 					desc = L["Direction the bag sorting will use to allocate the items."]
 				},
 				spacer = {
-					order = 5,
+					order = 3,
 					type = "description",
 					name = " "
 				},
 				spacer = {
-					order = 6,
+					order = 4,
 					type = "description",
 					name = " "
 				},
 				description = {
-					order = 7,
+					order = 5,
 					type = "description",
 					name = L["Here you can add items or search terms that you want to be excluded from sorting. To remove an item just click on its name in the list."]
 				},
 				addEntryGroup = {
-					order = 8,
+					order = 6,
 					type = "group",
 					name = L["Add Item or Search Syntax"],
 					guiInline = true,
