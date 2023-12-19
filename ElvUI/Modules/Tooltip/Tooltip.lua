@@ -556,7 +556,15 @@ function TT:GameTooltip_OnTooltipSetItem(tt)
 		local _, link = tt:GetItem()
 		local num = GetItemCount(link)
 		local numall = GetItemCount(link, true)
-		local _, _, _, _, _, _, _, stack, _, _, sellPrice = GetItemInfo(link)
+		
+		local stack, sellPrice
+		if link ~= nil then
+		 _, _, _, _, _, _, _, stack, _, _, sellPrice = GetItemInfo(link)
+		 else
+			stack = 0
+			sellPrice = 0
+		 end
+		
 		local left, right, bankCount = " ", " ", " "
 		
 		if link and TT:IsModKeyDown() then
@@ -581,7 +589,7 @@ function TT:GameTooltip_OnTooltipSetItem(tt)
 			tt:AddDoubleLine(" ", bankCount)
 		end
 
-		if TT.db.MaxStack and stack > 1 then
+		if TT.db.MaxStack and (stack ~= nil and stack > 1) then
 			if TT.db.MaxStackValue then
 				local totalvalue = sellPrice * stack
 				tt:AddLine("Max Stack Size: "..stack.."  |CFFF7FCFC"..GetCoinTextureString(totalvalue).."|r")
